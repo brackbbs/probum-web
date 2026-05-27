@@ -308,7 +308,7 @@
       <input type="password" id="login-password" required autocomplete="current-password">
     </div>
     <button type="submit" class="btn-login" id="login-btn">Entrar</button>
-    <div class="login-foot">Probum © 2026 · Acesso somente por convite</div>
+    <div class="login-foot">Probum &copy; 2026 &middot; Acesso somente por convite</div>
   </form>
 </div>
 
@@ -970,7 +970,7 @@ var CURRENT_PROFILE = null;
 /* ============ AUTH (Supabase) ============ */
 function initSupabase(){
   if(!window.supabase || !window.PROBUM_CONFIG){
-    console.error('Supabase SDK ou config não carregados.');
+    console.error('Supabase SDK ou config nao carregados.');
     return false;
   }
   SB = window.supabase.createClient(
@@ -982,15 +982,10 @@ function initSupabase(){
 }
 
 async function bootstrapAuth(){
-  // Splash visível por ~1.5s, depois verifica sessão
   await new Promise(function(r){ setTimeout(r, 1500); });
   var s = document.getElementById('splash');
   if(s){ s.classList.add('fade'); setTimeout(function(){ if(s && s.parentNode) s.parentNode.removeChild(s); }, 1300); }
-
-  if(!SB){
-    showLogin();
-    return;
-  }
+  if(!SB){ showLogin(); return; }
   try {
     var res = await SB.auth.getSession();
     var session = res && res.data ? res.data.session : null;
@@ -1001,7 +996,7 @@ async function bootstrapAuth(){
       showLogin();
     }
   } catch(err){
-    console.error('Erro ao verificar sessão:', err);
+    console.error('Erro ao verificar sessao:', err);
     showLogin();
   }
 }
@@ -1025,7 +1020,7 @@ async function loadUserContext(user){
       }
     }
   } catch(err){
-    console.warn('Não foi possível carregar profile:', err);
+    console.warn('Nao foi possivel carregar profile:', err);
   }
 }
 
@@ -1048,7 +1043,7 @@ async function doLogin(e){
   var btn = document.getElementById('login-btn');
   var errBox = document.getElementById('login-error');
   errBox.classList.remove('show');
-  btn.disabled = true; btn.textContent = 'Entrando…';
+  btn.disabled = true; btn.textContent = 'Entrando...';
   var email = document.getElementById('login-email').value.trim();
   var password = document.getElementById('login-password').value;
   try {
@@ -1914,4 +1909,135 @@ function runPembSub(num){
     var off = PEMB_DATA.off_label;
     var text = off.c1 + '\n\n' + off.p1 + '\n\n' + COBERTURA_PADRAO + '\n\n' + off.p3;
     var html = '<div style="margin-bottom:14px"><span style="cursor:pointer;color:var(--azul-medio);font-size:13px;font-weight:600" onclick="runPembSel()">← Voltar aos grupos</span></div>'+
-      '<div 
+      '<div class="card" style="overflow:hidden;margin-bottom:18px"><div class="protocol-header">'+
+      '<h2>Análise técnica · pembrolizumabe (Keytruda)</h2>'+
+      '<div class="ph-sub">Caso '+PEMB_CASE_ID+' · indicação fora de bula brasileira</div>'+
+      '<div class="ph-desc">Sub-protocolo off-label — saída automática sem perguntas técnicas</div>'+
+      '</div></div>'+
+      '<div id="pemb-result"></div>';
+    document.getElementById('pemb-content').innerHTML = html;
+    setTimeout(function(){renderOutputAt('pemb-result', text, 'Modelo de negativa — uso off-label');},30);
+    return;
+  }
+  var sub = PEMB_DATA.subs.find(function(s){return s.num===num;});
+  if(!sub) return;
+  PEMB_SUB_ATUAL = sub;
+  var grupo = PEMB_DATA.grupos.find(function(g){return g.key===sub.grupo;});
+  document.getElementById('pemb-breadcrumb').textContent = 'Pembrolizumabe · '+grupo.titulo.substring(grupo.titulo.indexOf(' ')+1)+' · #'+sub.num;
+  var html = '<div style="margin-bottom:14px"><span style="cursor:pointer;color:var(--azul-medio);font-size:13px;font-weight:600" onclick="runPembGrupo(\''+sub.grupo+'\')">← Voltar a '+grupo.titulo+'</span></div>'+
+    '<div class="card" style="overflow:hidden;margin-bottom:18px"><div class="protocol-header">'+
+    '<h2>Análise técnica · pembrolizumabe — sub-protocolo '+sub.num+'</h2>'+
+    '<div class="ph-sub">Caso '+PEMB_CASE_ID+'</div>'+
+    '<div class="ph-desc">'+escapeHtml(sub.titulo)+'</div>'+
+    '<div class="protocol-version">Protocolo Probum Triagem · v1.0 · 14/05/2026 · medicamento extra-rol</div>'+
+    '</div></div>'+
+    '<div class="card mb-16" style="background:var(--azul-claro);border-color:#BCD4F0"><div class="card-body" style="padding:14px 18px;font-size:12.5px;color:var(--azul);line-height:1.6"><strong>Indicação alegada:</strong> '+escapeHtml(sub.c1)+'</div></div>'+
+    '<div id="pemb-questions">';
+  for(var pi=0; pi<sub.perguntas.length; pi++){
+    var pq = sub.perguntas[pi];
+    var currentClass = pi===0 ? ' current' : '';
+    html += '<div class="qcard'+currentClass+'" data-pid="'+pq.idx+'">'+
+      '<div class="qnum">Pergunta '+(pi+1)+' · '+sub.num+'-A-P'+pq.idx+'</div>'+
+      '<div class="qtext">'+escapeHtml(pq.texto)+'</div>'+
+      '<div class="options">';
+    for(var oi=0; oi<pq.opcoes.length; oi++){
+      html += '<div class="option" onclick="selOpt(this)" data-oi="'+oi+'"><div class="radio"></div>'+escapeHtml(pq.opcoes[oi])+'</div>';
+    }
+    html += '</div></div>';
+  }
+  var b = PEMB_DATA.bloco_b;
+  html += '<div class="qcard" data-pid="B">'+
+    '<div class="qnum">Pergunta final · contraindicação formal · '+b.id+'</div>'+
+    '<div class="qtext">'+escapeHtml(b.texto)+'</div>'+
+    '<div class="options">';
+  for(var oi=0; oi<b.opcoes.length; oi++){
+    html += '<div class="option" onclick="selOpt(this)" data-oi="'+oi+'"><div class="radio"></div>'+escapeHtml(b.opcoes[oi])+'</div>';
+  }
+  html += '</div></div>'+
+    '<div class="text-right" style="margin-top:18px"><button class="btn btn-primary btn-lg" onclick="concluirPemb()">Concluir análise →</button></div>'+
+    '</div>'+
+    '<div id="pemb-result"></div>';
+  document.getElementById('pemb-content').innerHTML = html;
+}
+
+function concluirPemb(){
+  var sub = PEMB_SUB_ATUAL;
+  if(!sub) return;
+  var respostas = [];
+  var qcards = document.querySelectorAll('#pemb-questions .qcard');
+  var b_resp = null;
+  for(var i=0; i<qcards.length; i++){
+    var qc = qcards[i];
+    var pid = qc.dataset.pid;
+    var sel = qc.querySelector('.option.selected');
+    if(!sel) continue;
+    var oi = parseInt(sel.dataset.oi);
+    if(pid==='B'){
+      b_resp = {oi: oi, texto: PEMB_DATA.bloco_b.opcoes[oi], variante: PEMB_DATA.bloco_b.variantes[String(oi)] || null};
+    } else {
+      var pq = sub.perguntas.find(function(p){return String(p.idx)===pid;});
+      if(!pq) continue;
+      var op_texto = pq.opcoes[oi];
+      var var_texto = pq.variantes[String(oi)] || null;
+      var sugereDesalinhamento = (op_texto.indexOf('Não')===0 || op_texto.indexOf('Não informado')>=0 || op_texto.indexOf('Não documentado')>=0 || op_texto.indexOf('diferente')>=0 || op_texto.toLowerCase().indexOf('houve terapia')>=0 || op_texto.toLowerCase().indexOf('combinação diversa')>=0 || op_texto.toLowerCase().indexOf('combinacao diversa')>=0);
+      if(!var_texto && sugereDesalinhamento){
+        var_texto = 'No caso, a resposta documentada é "'+op_texto+'", configuração que não atende aos critérios técnicos estabelecidos pelas normas sanitárias brasileiras para a indicação solicitada conforme bula aprovada pela ANVISA.';
+      }
+      respostas.push({pid: pid, oi: oi, op_texto: op_texto, variante: var_texto});
+    }
+  }
+  document.getElementById('pemb-questions').style.display='none';
+  var temContraindicacao = b_resp && b_resp.oi === 0;
+  var temAusencia = respostas.some(function(r){return r.op_texto.indexOf('Não informado')>=0 || r.op_texto.indexOf('Não documentado')>=0;});
+  var temPosAlinhada = respostas.every(function(r){return !r.variante;}) && !temContraindicacao;
+  if(temPosAlinhada){
+    renderOutputAt('pemb-result', 'O protocolo Probum Triagem não detectou inconsistência técnica ou legal na análise.', 'Protocolo concluído', 'success');
+    return;
+  }
+  var negText = montarParecerPemb(sub, respostas, b_resp);
+  var compText = montarComplementoPemb(sub, respostas);
+  if(temAusencia && !temContraindicacao){
+    renderBifurcacao('pemb-result', negText, compText);
+  } else {
+    renderOutputAt('pemb-result', negText, temContraindicacao ? 'Modelo de negativa — contraindicação formal' : 'Modelo de negativa');
+  }
+}
+
+function montarParecerPemb(sub, respostas, b_resp){
+  var partes = [sub.c1];
+  if(b_resp && b_resp.variante){ partes.push(b_resp.variante); }
+  for(var i=0; i<respostas.length; i++){
+    if(respostas[i].variante){ partes.push(respostas[i].variante); }
+  }
+  partes.push(sub.p1);
+  partes.push(COBERTURA_PADRAO);
+  partes.push(sub.p3);
+  if(sub.cob_disponivel){ partes.push(sub.cob_disponivel); }
+  return partes.join('\n\n');
+}
+
+function montarComplementoPemb(sub, respostas){
+  var docs = sub.comp_docs && sub.comp_docs.length ? sub.comp_docs : ['Documentação clínica adicional conforme exigências da bula ANVISA para a indicação solicitada'];
+  var txt = 'PEDIDO DE INFORMAÇÕES COMPLEMENTARES\n\n';
+  txt += 'Ref.: Solicitação de pembrolizumabe (Keytruda) · Caso '+PEMB_CASE_ID+' · '+sub.titulo+'\n\n';
+  txt += 'Em análise técnica do pedido em referência, foi constatada ausência de documentação/informação que permita verificar o enquadramento da solicitação nos critérios estabelecidos pelas normas sanitárias brasileiras para uso do pembrolizumabe.\n\n';
+  txt += 'Assim, solicita-se a apresentação dos seguintes documentos/informações:\n\n';
+  for(var i=0; i<docs.length; i++){ txt += '  •  '+docs[i]+'\n'; }
+  txt += '\nA apresentação é exigência indispensável para continuidade da análise do pedido.';
+  return txt;
+}
+
+/* configurar prazo mínimo +2 dias úteis (simplificado: +2 dias) */
+(function setupPrazoMin(){
+  var d = new Date(); d.setDate(d.getDate()+2);
+  var iso = d.toISOString().split('T')[0];
+  var inputs = ['nq-prazo','nd-prazo'];
+  inputs.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.min = iso; el.value = iso; }
+  });
+})();
+</script>
+</body>
+</html>
+
