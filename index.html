@@ -389,22 +389,25 @@
       </div>
       <div class="content fade-in">
         <div class="stats-grid">
-          <div class="stat-card"><div class="stat-label">Demandas — Usuário</div><div class="stat-value">37</div><div class="stat-sub">no mês corrente</div></div>
-          <div class="stat-card"><div class="stat-label">Demandas — Cliente</div><div class="stat-value">214</div><div class="stat-sub">no mês corrente</div></div>
-          <div class="stat-card"><div class="stat-label">Tempo de login</div><div class="stat-value">12h</div><div class="stat-sub">acumulado no mês</div></div>
-          <div class="stat-card"><div class="stat-label">Tempo em protocolos</div><div class="stat-value">9h32</div><div class="stat-sub">acumulado no mês</div></div>
+          <div class="stat-card"><div class="stat-label">Demandas — Usuário</div><div class="stat-value" id="kpi-demandas-usuario">0</div><div class="stat-sub">sessão atual</div></div>
+          <div class="stat-card"><div class="stat-label">Demandas — Cliente</div><div class="stat-value" id="kpi-demandas-cliente">0</div><div class="stat-sub">sessão atual</div></div>
+          <div class="stat-card"><div class="stat-label">Tempo de login</div><div class="stat-value" id="kpi-tempo-login">0min</div><div class="stat-sub">sessão atual</div></div>
+          <div class="stat-card"><div class="stat-label">Tempo em protocolos</div><div class="stat-value" id="kpi-tempo-proto">0min</div><div class="stat-sub">sessão atual</div></div>
         </div>
         <div class="grid-2">
           <div class="card">
             <div class="card-header"><h3>📊 Distribuição por categoria</h3></div>
-            <div class="card-body">
-              <div style="margin-bottom:14px">
-                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="font-weight:600">Medicamentos de Alto Custo</span><span style="color:var(--cinza)">63%</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width:63%"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="font-weight:600">Procedimentos</span><span style="color:var(--cinza)">37%</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width:37%;background:var(--laranja)"></div></div>
+            <div class="card-body" id="dash-categoria">
+              <div id="dash-cat-empty" style="text-align:center;color:var(--cinza);font-size:13px;padding:18px 0">Comece a rodar protocolos para ver a distribuição aqui.</div>
+              <div id="dash-cat-data" style="display:none">
+                <div style="margin-bottom:14px">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="font-weight:600">Medicamentos de Alto Custo</span><span style="color:var(--cinza)" id="dash-pct-med">0%</span></div>
+                  <div class="progress-bar"><div class="progress-fill" id="dash-bar-med" style="width:0%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="font-weight:600">Procedimentos</span><span style="color:var(--cinza)" id="dash-pct-proc">0%</span></div>
+                  <div class="progress-bar"><div class="progress-fill" id="dash-bar-proc" style="width:0%;background:var(--laranja)"></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -720,8 +723,8 @@
       </div>
       <div class="content fade-in">
         <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
-          <div class="stat-card"><div class="stat-label">Em produção</div><div class="stat-value">1</div><div class="stat-sub">pedido ativo</div></div>
-          <div class="stat-card"><div class="stat-label">Entregues</div><div class="stat-value">8</div><div class="stat-sub">acumulado</div></div>
+          <div class="stat-card"><div class="stat-label">Em produção</div><div class="stat-value" id="kpi-quesitos-em-prod">0</div><div class="stat-sub">pedidos ativos</div></div>
+          <div class="stat-card"><div class="stat-label">Entregues</div><div class="stat-value" id="kpi-quesitos-entregues">0</div><div class="stat-sub">acumulado</div></div>
           <div class="stat-card"><div class="stat-label">SLA médio</div><div class="stat-value">48h</div><div class="stat-sub">da solicitação à entrega</div></div>
         </div>
         <div class="alert alert-info"><span style="font-size:18px">⚖️</span><span><strong>Serviço artesanal sob demanda.</strong> Quesitos elaborados por advogado especializado, com pesquisa técnica em fontes primárias (PubMed, ANVISA, PCDT, DUT ANS, STJ/CNJ). Subsídio técnico para uso por profissional habilitado.</span></div>
@@ -791,8 +794,8 @@
       </div>
       <div class="content fade-in">
         <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
-          <div class="stat-card"><div class="stat-label">Em produção</div><div class="stat-value">1</div><div class="stat-sub">pedido ativo</div></div>
-          <div class="stat-card"><div class="stat-label">Entregues</div><div class="stat-value">5</div><div class="stat-sub">acumulado</div></div>
+          <div class="stat-card"><div class="stat-label">Em produção</div><div class="stat-value" id="kpi-doutrina-em-prod">0</div><div class="stat-sub">pedidos ativos</div></div>
+          <div class="stat-card"><div class="stat-label">Entregues</div><div class="stat-value" id="kpi-doutrina-entregues">0</div><div class="stat-sub">acumulado</div></div>
           <div class="stat-card"><div class="stat-label">Valor médio envolvido</div><div class="stat-value">R$ 480k</div><div class="stat-sub">por parecer</div></div>
         </div>
         <div class="alert alert-info"><span style="font-size:18px">📜</span><span><strong>Serviço artesanal sob demanda.</strong> Parecer técnico-jurídico completo elaborado por advogado especializado para uso em impugnação judicial ou administrativa de alto valor. Subsídio técnico para uso por profissional habilitado.</span></div>
@@ -967,6 +970,90 @@ var SB = null;
 var CURRENT_USER = null;
 var CURRENT_PROFILE = null;
 
+/* ============ SESSÃO AO VIVO (zera a cada login) ============ */
+var SESSION = { loginAt: null, protoOpenAt: null, totalProtoMs: 0, demandas: 0, catMed: 0, catProc: 0, tickInterval: null };
+
+function resetSession(){
+  if(SESSION.tickInterval){ clearInterval(SESSION.tickInterval); }
+  SESSION = { loginAt: Date.now(), protoOpenAt: null, totalProtoMs: 0, demandas: 0, catMed: 0, catProc: 0, tickInterval: null };
+  SESSION.tickInterval = setInterval(renderDashboardKPIs, 1000);
+  renderDashboardKPIs();
+}
+
+function clearSession(){
+  if(SESSION.tickInterval){ clearInterval(SESSION.tickInterval); }
+  SESSION = { loginAt: null, protoOpenAt: null, totalProtoMs: 0, demandas: 0, catMed: 0, catProc: 0, tickInterval: null };
+}
+
+function classifyProtocol(id){
+  if(id === 'analise-dona' || id === 'analise-enco' || id === 'analise-pemb') return 'med';
+  if(id === 'analise-other'){
+    var el = document.getElementById('other-content');
+    var key = el && el.dataset ? el.dataset.key : null;
+    if(key === 'ineb') return 'med';
+    return 'proc';
+  }
+  return null;
+}
+
+function trackProtocolEnter(id){
+  if(SESSION.protoOpenAt){
+    SESSION.totalProtoMs += Date.now() - SESSION.protoOpenAt;
+    SESSION.protoOpenAt = null;
+  }
+  SESSION.protoOpenAt = Date.now();
+  SESSION.demandas++;
+  var cat = classifyProtocol(id);
+  if(cat === 'med') SESSION.catMed++;
+  else if(cat === 'proc') SESSION.catProc++;
+}
+
+function trackProtocolLeave(){
+  if(SESSION.protoOpenAt){
+    SESSION.totalProtoMs += Date.now() - SESSION.protoOpenAt;
+    SESSION.protoOpenAt = null;
+  }
+}
+
+function fmtDuration(ms){
+  if(!ms || ms < 0) ms = 0;
+  var totalMin = Math.floor(ms / 60000);
+  var hrs = Math.floor(totalMin / 60);
+  var mins = totalMin % 60;
+  if(hrs > 0) return hrs + 'h' + String(mins).padStart(2,'0');
+  if(totalMin === 0){
+    var secs = Math.floor(ms / 1000);
+    return secs + 's';
+  }
+  return totalMin + 'min';
+}
+
+function renderDashboardKPIs(){
+  if(!SESSION.loginAt) return;
+  var d1 = document.getElementById('kpi-demandas-usuario'); if(d1) d1.textContent = SESSION.demandas;
+  var d2 = document.getElementById('kpi-demandas-cliente'); if(d2) d2.textContent = SESSION.demandas;
+  var tl = document.getElementById('kpi-tempo-login'); if(tl) tl.textContent = fmtDuration(Date.now() - SESSION.loginAt);
+  var protoMs = SESSION.totalProtoMs + (SESSION.protoOpenAt ? (Date.now() - SESSION.protoOpenAt) : 0);
+  var tp = document.getElementById('kpi-tempo-proto'); if(tp) tp.textContent = fmtDuration(protoMs);
+  // Gráfico de categoria
+  var total = SESSION.catMed + SESSION.catProc;
+  var empty = document.getElementById('dash-cat-empty');
+  var data = document.getElementById('dash-cat-data');
+  if(total === 0){
+    if(empty) empty.style.display = 'block';
+    if(data) data.style.display = 'none';
+  } else {
+    if(empty) empty.style.display = 'none';
+    if(data) data.style.display = 'block';
+    var medPct = Math.round((SESSION.catMed / total) * 100);
+    var procPct = 100 - medPct;
+    var bm = document.getElementById('dash-bar-med'); if(bm) bm.style.width = medPct + '%';
+    var bp = document.getElementById('dash-bar-proc'); if(bp) bp.style.width = procPct + '%';
+    var pm = document.getElementById('dash-pct-med'); if(pm) pm.textContent = medPct + '%';
+    var pp = document.getElementById('dash-pct-proc'); if(pp) pp.textContent = procPct + '%';
+  }
+}
+
 /* ============ AUTH (Supabase) ============ */
 function initSupabase(){
   if(!window.supabase || !window.PROBUM_CONFIG){
@@ -991,6 +1078,7 @@ async function bootstrapAuth(){
     var session = res && res.data ? res.data.session : null;
     if(session && session.user){
       await loadUserContext(session.user);
+      resetSession();
       showLanding();
     } else {
       showLogin();
@@ -1055,6 +1143,7 @@ async function doLogin(e){
       return false;
     }
     await loadUserContext(resp.data.user);
+    resetSession();
     showLanding();
     document.getElementById('login-form').reset();
   } catch(err){
@@ -1070,6 +1159,7 @@ async function doLogout(){
   if(SB){ await SB.auth.signOut(); }
   CURRENT_USER = null; CURRENT_PROFILE = null;
   APP_ATUAL = null;
+  clearSession();
   showLogin();
 }
 
@@ -1097,6 +1187,9 @@ function toLanding(){
 
 /* ============ TRIAGEM ============ */
 function show(id){
+  // Tracking de protocolo (entra/sai)
+  var isProto = id && id.indexOf('analise-') === 0;
+  if(!isProto) trackProtocolLeave();
   document.querySelectorAll('#app-triagem .screen').forEach(function(s){s.classList.remove('active');});
   var el=document.getElementById('screen-'+id); if(el) el.classList.add('active');
   var navMap={dashboard:0,meus:1,protocolos:2,templates:3,relatorios:4,docs:5};
@@ -1106,6 +1199,8 @@ function show(id){
   if(id==='analise-dona'){var r=document.getElementById('dona-result'); if(r) r.innerHTML=''; var q=document.getElementById('dona-questions'); if(q) q.style.display='block';}
   if(id==='analise-other'){var ro=document.getElementById('other-content'); if(ro){var k=ro.dataset.key; if(k) runOther(k);}}
   if(id==='analise-pemb') runPembSel();
+  if(isProto) trackProtocolEnter(id);
+  if(id === 'dashboard') renderDashboardKPIs();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1637,6 +1732,8 @@ async function renderQuesitosLista(){
   QUESITOS_ORDERS = await carregarPedidos('quesitos');
   var emProd = QUESITOS_ORDERS.filter(function(o){return o.status<3;});
   var entr = QUESITOS_ORDERS.filter(function(o){return o.status===3;});
+  var kpi1 = document.getElementById('kpi-quesitos-em-prod'); if(kpi1) kpi1.textContent = emProd.length;
+  var kpi2 = document.getElementById('kpi-quesitos-entregues'); if(kpi2) kpi2.textContent = entr.length;
   document.getElementById('quesitos-em-producao').innerHTML = emProd.map(function(o){
     return '<tr><td><strong>#'+o.id+'</strong></td><td>'+o.tipo+'</td><td>'+o.caso+'</td><td>'+o.solicitado+'</td><td>'+o.prazo+'</td>'+
       '<td><span class="pipe-tag pipe-tag-'+o.status+'">'+PIPE_LABELS[o.status]+'</span></td>'+
@@ -1665,6 +1762,8 @@ async function renderDoutrinaLista(){
   DOUTRINA_ORDERS = await carregarPedidos('doutrina');
   var emProd = DOUTRINA_ORDERS.filter(function(o){return o.status<3;});
   var entr = DOUTRINA_ORDERS.filter(function(o){return o.status===3;});
+  var kpi1 = document.getElementById('kpi-doutrina-em-prod'); if(kpi1) kpi1.textContent = emProd.length;
+  var kpi2 = document.getElementById('kpi-doutrina-entregues'); if(kpi2) kpi2.textContent = entr.length;
   document.getElementById('doutrina-em-producao').innerHTML = emProd.map(function(o){
     return '<tr><td><strong>#'+o.id+'</strong></td><td>'+o.natureza+'</td><td>'+o.caso+'</td><td>'+o.solicitado+'</td><td>'+o.prazo+'</td>'+
       '<td><span class="pipe-tag pipe-tag-'+o.status+'">'+PIPE_LABELS[o.status]+'</span></td>'+
@@ -1881,6 +1980,7 @@ async function submitPedido(p){
     });
   }
 
+  SESSION.demandas++;
   closeModal(p.modal);
   var msg = 'Pedido '+codigo+' registrado'+(p.prazo?(' · prazo solicitado '+prazoFmt(p.prazo)):'');
   if(falhas > 0) msg += ' · '+falhas+' anexo(s) com falha';
