@@ -1,0 +1,28 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dependências (caso a gente venha a usar)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Variáveis de ambiente — nunca commitar
+.env
+.env.local
+.env.*.local
+
+# Não versionar arquivos preparatórios da pasta — só o código que vai pro deploy
+LEIA_PRIMEIRO.md
+01_schema.sql
