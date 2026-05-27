@@ -1556,24 +1556,23 @@ var DOUTRINA_ORDERS = [];
 function fmtDataHora(iso){
   if(!iso) return null;
   var d = new Date(iso);
-  var dd = String(d.getDate()).padStart(2,'0');
-  var mm = String(d.getMonth()+1).padStart(2,'0');
-  var hh = String(d.getHours()).padStart(2,'0');
-  var mi = String(d.getMinutes()).padStart(2,'0');
+  var dd = String(d.getUTCDate()).padStart(2,'0');
+  var mm = String(d.getUTCMonth()+1).padStart(2,'0');
+  var hh = String(d.getUTCHours()).padStart(2,'0');
+  var mi = String(d.getUTCMinutes()).padStart(2,'0');
   return dd+'/'+mm+' '+hh+':'+mi;
 }
 function fmtData(iso){
   if(!iso) return '';
   var d = new Date(iso);
   if(isNaN(d)) {
-    // pode ser YYYY-MM-DD
     var p = iso.split('-');
     if(p.length===3) return p[2]+'/'+p[1]+'/'+p[0];
     return iso;
   }
-  var dd = String(d.getDate()).padStart(2,'0');
-  var mm = String(d.getMonth()+1).padStart(2,'0');
-  var yy = d.getFullYear();
+  var dd = String(d.getUTCDate()).padStart(2,'0');
+  var mm = String(d.getUTCMonth()+1).padStart(2,'0');
+  var yy = d.getUTCFullYear();
   return dd+'/'+mm+'/'+yy;
 }
 function fmtDataCurta(iso){
@@ -1584,9 +1583,9 @@ function fmtDataCurta(iso){
     if(p.length===3) return p[2]+'/'+p[1]+'/'+p[0];
     return iso;
   }
-  var dd = String(d.getDate()).padStart(2,'0');
-  var mm = String(d.getMonth()+1).padStart(2,'0');
-  var yy = d.getFullYear();
+  var dd = String(d.getUTCDate()).padStart(2,'0');
+  var mm = String(d.getUTCMonth()+1).padStart(2,'0');
+  var yy = d.getUTCFullYear();
   return dd+'/'+mm+'/'+yy;
 }
 function mapRowToOrder(row, kind){
@@ -1710,15 +1709,23 @@ function renderDetalhe(o, kind){
 }
 
 function renderPipeline(status, times){
+  // status: 0=Pedido recebido, 1=Análise documental, 2=Em produção, 3=Finalizado
+  // Quando status===3 (Finalizado), TODAS as 4 etapas estão concluídas (done)
   var html = '<div class="card"><div class="card-body" style="padding:24px 28px"><div class="pipeline-steps">';
   for(var i=0; i<4; i++){
-    var cls = i<status ? 'done' : (i===status ? 'active' : 'pending');
-    var icon = i<status ? '✓' : (i===status ? '⟳' : '○');
-    var t = times[i] || (i===status ? 'Em curso' : '—');
+    var isDone, isActive;
+    if(status === 3){ isDone = true; isActive = false; }
+    else { isDone = i < status; isActive = i === status; }
+    var cls = isDone ? 'done' : (isActive ? 'active' : 'pending');
+    var icon = isDone ? '✓' : (isActive ? '⟳' : '○');
+    var t = times[i] || (isActive ? 'Em curso' : '—');
     html += '<div class="pipe-step '+cls+'"><div class="pipe-dot">'+icon+'</div>'+
             '<div class="pipe-label">'+PIPE_LABELS[i]+'</div>'+
             '<div class="pipe-time">'+t+'</div></div>';
-    if(i<3){ html += '<div class="pipe-connector'+(i<status?' done':'')+'"></div>'; }
+    if(i<3){
+      var connDone = (status === 3) || (i < status);
+      html += '<div class="pipe-connector'+(connDone?' done':'')+'"></div>';
+    }
   }
   html += '</div></div></div>';
   return html;
