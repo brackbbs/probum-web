@@ -371,8 +371,8 @@
       <div class="user-info">
         <div class="avatar">DR</div>
         <div>
-          <div class="user-name" style="color:#fff">Dr. Médico Auditor</div>
-          <div class="user-role">Operadora Cliente</div>
+          <div class="user-name sb-user-name" style="color:#fff">—</div>
+          <div class="user-role sb-user-role">—</div>
         </div>
       </div>
     </div>
@@ -705,8 +705,8 @@
       <div class="user-info">
         <div class="avatar">DR</div>
         <div>
-          <div class="user-name" style="color:#fff">Dr. Médico Auditor</div>
-          <div class="user-role">Operadora Cliente</div>
+          <div class="user-name sb-user-name" style="color:#fff">—</div>
+          <div class="user-role sb-user-role">—</div>
         </div>
       </div>
     </div>
@@ -776,8 +776,8 @@
       <div class="user-info">
         <div class="avatar">DR</div>
         <div>
-          <div class="user-name" style="color:#fff">Dr. Médico Auditor</div>
-          <div class="user-role">Operadora Cliente</div>
+          <div class="user-name sb-user-name" style="color:#fff">—</div>
+          <div class="user-role sb-user-role">—</div>
         </div>
       </div>
     </div>
@@ -1106,6 +1106,9 @@ async function loadUserContext(user){
           roleTag.style.display = 'none';
         }
       }
+      // Atualizar footers de sidebar das 3 sub-apps
+      document.querySelectorAll('.sb-user-name').forEach(function(el){ el.textContent = resp.data.nome || resp.data.email; });
+      document.querySelectorAll('.sb-user-role').forEach(function(el){ el.textContent = resp.data.operadora || (resp.data.papel === 'admin' ? 'Administrador' : 'Auditor'); });
     }
   } catch(err){
     console.warn('Nao foi possivel carregar profile:', err);
