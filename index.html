@@ -991,6 +991,35 @@ function clearSession(){
   SESSION = { loginAt: null, protoOpenAt: null, totalProtoMs: 0, demandas: 0, catMed: 0, catProc: 0, tickInterval: null };
 }
 
+function svgOutraIndicacao(){
+  return '<svg width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+    '<circle cx="22" cy="36" r="8" fill="#C0392B"/>'+
+    '<path d="M10 60 C10 50 14 44 22 44 C30 44 34 50 34 60 Z" fill="#C0392B"/>'+
+    '<circle cx="48" cy="18" r="11" fill="none" stroke="#C0392B" stroke-width="2.5"/>'+
+    '<circle cx="40" cy="29" r="3" fill="none" stroke="#C0392B" stroke-width="2"/>'+
+    '<circle cx="35" cy="34" r="1.8" fill="#C0392B"/>'+
+    '<text x="48" y="23" font-size="13" font-weight="700" fill="#C0392B" text-anchor="middle" font-family="system-ui">?</text>'+
+    '</svg>';
+}
+
+function cardOutraIndicacao(onclickAttr){
+  return '<div class="pemb-grupo-card" '+onclickAttr+'>'+
+    '<div class="pgc-icon" style="display:flex;align-items:center;justify-content:center;height:56px">'+ svgOutraIndicacao() +'</div>'+
+    '<div class="pgc-title">Outra indicação</div>'+
+    '<div class="pgc-desc">Indicação fora das aprovadas pela ANVISA — caso atípico.</div>'+
+    '<div class="pgc-count" style="visibility:hidden">—</div>'+
+  '</div>';
+}
+
+function cardIndicacao(iconEmoji, titulo, desc, onclickAttr, countLabel){
+  return '<div class="pemb-grupo-card" '+onclickAttr+'>'+
+    '<div class="pgc-icon">'+iconEmoji+'</div>'+
+    '<div class="pgc-title">'+titulo+'</div>'+
+    '<div class="pgc-desc">'+desc+'</div>'+
+    '<div class="pgc-count">'+(countLabel || '&nbsp;')+'</div>'+
+  '</div>';
+}
+
 function classifyProtocol(id){
   if(id === 'analise-dona' || id === 'analise-enco' || id === 'analise-pemb' || id === 'analise-tez') return 'med';
   if(id === 'analise-other'){
@@ -1435,14 +1464,13 @@ function protoHeader(titulo, caseId, sub, desc, ver){
 function runInebSel(caseId){
   var html = protoHeader('Análise técnica · inebilizumabe (Uplizna)', caseId, '', 'Anticorpo monoclonal anti-CD19',
     'Protocolo Probum Triagem · v1.0 · 06/05/2026 · medicamento extra-rol') +
-    '<div class="qcard current"><div class="qnum">Seleção de indicação clínica</div>'+
-    '<div class="qtext">Para qual indicação clínica o medicamento Uplizna (inebilizumabe) está sendo prescrito?</div>'+
-    '<div class="options">'+
-    '<div class="option" onclick="runInebSub(\'nmosd\',\''+caseId+'\')"><div class="radio"></div>Distúrbio do espectro da neuromielite óptica (NMOSD) com sorologia AQP4-IgG positiva</div>'+
-    '<div class="option" onclick="runInebSub(\'mg\',\''+caseId+'\')"><div class="radio"></div>Miastenia gravis generalizada</div>'+
-    '<div class="option" onclick="runInebSub(\'igg4\',\''+caseId+'\')"><div class="radio"></div>Doença relacionada à IgG4 (DR-IgG4)</div>'+
-    '<div class="option" onclick="runInebSub(\'off\',\''+caseId+'\')"><div class="radio"></div>Outra indicação</div>'+
-    '</div></div>';
+    '<div class="alert alert-info"><span style="font-size:18px">💡</span><span>Selecione a <strong>indicação clínica</strong> para a qual o medicamento foi prescrito.</span></div>'+
+    '<div class="pemb-grupos">' +
+      cardIndicacao('🧠', 'NMOSD', 'Distúrbio do espectro da neuromielite óptica — sorologia AQP4-IgG positiva', "onclick=\"runInebSub('nmosd','"+caseId+"')\"") +
+      cardIndicacao('💪', 'Miastenia gravis', 'Miastenia gravis generalizada — sorologia AChR ou MuSK positiva', "onclick=\"runInebSub('mg','"+caseId+"')\"") +
+      cardIndicacao('🛡️', 'Doença IgG4', 'Doença relacionada à imunoglobulina G4 (DR-IgG4)', "onclick=\"runInebSub('igg4','"+caseId+"')\"") +
+      cardOutraIndicacao("onclick=\"runInebSub('off','"+caseId+"')\"") +
+    '</div>';
   document.getElementById('other-content').innerHTML=html;
 }
 
@@ -1572,15 +1600,14 @@ function concluirNeur(){
 function runAntiSel(caseId){
   var html = protoHeader('Análise técnica · tratamento ocular quimioterápico com antiangiogênico', caseId, '', 'Injeção intravítrea — CBHPM 30307147',
     'Protocolo Probum Triagem · v1.0 · 06/05/2026 · procedimento com Rol/DUT 74') +
-    '<div class="qcard current"><div class="qnum">Seleção de indicação clínica</div>'+
-    '<div class="qtext">Para qual indicação clínica o tratamento está sendo prescrito?</div>'+
-    '<div class="options">'+
-    '<div class="option" onclick="runAntiSub(\'dmri\',\''+caseId+'\')"><div class="radio"></div>Degeneração macular relacionada à idade — DMRI úmida</div>'+
-    '<div class="option" onclick="runAntiSub(\'emd\',\''+caseId+'\')"><div class="radio"></div>Edema macular diabético (EMD)</div>'+
-    '<div class="option" onclick="runAntiSub(\'ovc\',\''+caseId+'\')"><div class="radio"></div>Edema macular por oclusão de veia central da retina (OVC)</div>'+
-    '<div class="option" onclick="runAntiSub(\'orvc\',\''+caseId+'\')"><div class="radio"></div>Edema macular por oclusão de ramo de veia central da retina (ORVC)</div>'+
-    '<div class="option" onclick="runAntiSub(\'off\',\''+caseId+'\')"><div class="radio"></div>Outra indicação</div>'+
-    '</div></div>';
+    '<div class="alert alert-info"><span style="font-size:18px">💡</span><span>Selecione a <strong>indicação clínica</strong> conforme as 4 contempladas pela DUT 74.</span></div>'+
+    '<div class="pemb-grupos">' +
+      cardIndicacao('👁️', 'DMRI úmida', 'Degeneração macular relacionada à idade — forma neovascular', "onclick=\"runAntiSub('dmri','"+caseId+"')\"") +
+      cardIndicacao('💧', 'EMD', 'Edema macular diabético', "onclick=\"runAntiSub('emd','"+caseId+"')\"") +
+      cardIndicacao('⭕', 'OVC', 'Edema por oclusão de veia central da retina', "onclick=\"runAntiSub('ovc','"+caseId+"')\"") +
+      cardIndicacao('🌿', 'ORVC', 'Edema por oclusão de ramo de veia central da retina', "onclick=\"runAntiSub('orvc','"+caseId+"')\"") +
+      cardOutraIndicacao("onclick=\"runAntiSub('off','"+caseId+"')\"") +
+    '</div>';
   document.getElementById('other-content').innerHTML=html;
 }
 function runAntiSub(sub, caseId){
@@ -2046,12 +2073,8 @@ function runPembSel(){
       '<div class="pgc-count">'+count+' indicação'+(count===1?'':'es')+'</div>'+
     '</div>';
   }
-  html += '</div>'+
-    '<div style="margin-top:18px"><div class="bif-card" style="border:2px dashed var(--borda)" onclick="runPembSub(\'off\')">'+
-    '<div style="display:flex;align-items:center;gap:14px"><div style="font-size:32px">❓</div>'+
-    '<div style="flex:1"><h4 style="margin-bottom:4px">Outra indicação</h4>'+
-    '<p style="margin:0">Uso fora das 41 indicações aprovadas pela ANVISA — gera texto automático off-label sem perguntas técnicas.</p></div>'+
-    '<span class="bif-btn">Selecionar →</span></div></div></div>';
+  html += cardOutraIndicacao("onclick=\"runPembSub('off')\"");
+  html += '</div>';
   document.getElementById('pemb-content').innerHTML = html;
 }
 
@@ -2234,12 +2257,8 @@ function runTezSel(){
       '<div class="pgc-count">'+count+' indicação'+(count===1?'':'es')+'</div>'+
     '</div>';
   }
-  html += '</div>'+
-    '<div style="margin-top:18px"><div class="bif-card" style="border:2px dashed var(--borda)" onclick="runTezSub(\'off\')">'+
-    '<div style="display:flex;align-items:center;gap:14px"><div style="font-size:32px">❓</div>'+
-    '<div style="flex:1"><h4 style="margin-bottom:4px">Outra indicação</h4>'+
-    '<p style="margin:0">Uso fora das 2 indicações aprovadas pela ANVISA — gera texto automático off-label sem perguntas técnicas.</p></div>'+
-    '<span class="bif-btn">Selecionar →</span></div></div></div>';
+  html += cardOutraIndicacao("onclick=\"runTezSub('off')\"");
+  html += '</div>';
   document.getElementById('tez-content').innerHTML = html;
 }
 
