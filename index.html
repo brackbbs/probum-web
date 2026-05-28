@@ -487,6 +487,7 @@
                 <tr onclick="quickStart('ineb')" style="cursor:pointer"><td><strong>Inebilizumabe</strong> (Uplizna)</td><td>NMOSD AQP4+ · Miastenia gravis · IgG4-RD</td><td><span class="tag tag-extra">Extra-rol</span></td><td>v1.0 · 06/05/2026</td><td style="text-align:right">→</td></tr>
                 <tr onclick="quickStart('enco')" style="cursor:pointer"><td><strong>Encorafenibe</strong> (Braftovi)</td><td>Melanoma BRAF V600 · CCR metastático BRAF V600E</td><td><span class="tag tag-rol">Rol/DUT 64</span></td><td>v1.0 · 06/05/2026</td><td style="text-align:right">→</td></tr>
                 <tr onclick="quickStart('pemb')" style="cursor:pointer"><td><strong>Pembrolizumabe</strong> (Keytruda)</td><td>41 indicações oncológicas — pele, pulmão, GU, GI, ginecológico, hematológico, cabeça e pescoço, agnóstico</td><td><span class="tag tag-extra">Extra-rol</span></td><td>v1.0 · 14/05/2026</td><td style="text-align:right">→</td></tr>
+                <tr onclick="quickStart('tez')" style="cursor:pointer"><td><strong>Tezepelumabe</strong> (Tezspire)</td><td>Asma alérgica grave · Asma eosinofílica grave · Rinossinusite crônica grave com pólipo nasal</td><td><span class="tag tag-rol">DUTs 65.9/65.10</span> <span class="tag tag-extra">+ extra-rol</span></td><td>v1.0 · 27/05/2026</td><td style="text-align:right">→</td></tr>
               </tbody>
             </table>
           </div>
@@ -660,6 +661,11 @@
     <div class="screen" id="screen-analise-pemb">
       <div class="topbar"><div class="topbar-title"><span style="cursor:pointer;color:var(--cinza);font-weight:400" onclick="show('meus')">← Meus Protocolos</span> / <span id="pemb-breadcrumb" style="color:var(--cinza);font-weight:400"></span></div></div>
       <div class="content fade-in"><div id="pemb-content"></div></div>
+    </div>
+
+    <div class="screen" id="screen-analise-tez">
+      <div class="topbar"><div class="topbar-title"><span style="cursor:pointer;color:var(--cinza);font-weight:400" onclick="show('meus')">← Meus Protocolos</span> / <span id="tez-breadcrumb" style="color:var(--cinza);font-weight:400"></span></div></div>
+      <div class="content fade-in"><div id="tez-content"></div></div>
     </div>
 
     <div class="screen" id="screen-analise-enco">
@@ -986,7 +992,7 @@ function clearSession(){
 }
 
 function classifyProtocol(id){
-  if(id === 'analise-dona' || id === 'analise-enco' || id === 'analise-pemb') return 'med';
+  if(id === 'analise-dona' || id === 'analise-enco' || id === 'analise-pemb' || id === 'analise-tez') return 'med';
   if(id === 'analise-other'){
     var el = document.getElementById('other-content');
     var key = el && el.dataset ? el.dataset.key : null;
@@ -1202,6 +1208,7 @@ function show(id){
   if(id==='analise-dona'){var r=document.getElementById('dona-result'); if(r) r.innerHTML=''; var q=document.getElementById('dona-questions'); if(q) q.style.display='block';}
   if(id==='analise-other'){var ro=document.getElementById('other-content'); if(ro){var k=ro.dataset.key; if(k) runOther(k);}}
   if(id==='analise-pemb') runPembSel();
+  if(id==='analise-tez') runTezSel();
   if(isProto) trackProtocolEnter(id);
   if(id === 'dashboard') renderDashboardKPIs();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1218,6 +1225,7 @@ var PROTOCOLOS=[
   {key:'ineb',nome:'Inebilizumabe (Uplizna)',cat:'Medicamentos · extra-rol',scr:null},
   {key:'enco',nome:'Encorafenibe (Braftovi)',cat:'Medicamentos · Rol/DUT 64',scr:'analise-enco'},
   {key:'pemb',nome:'Pembrolizumabe (Keytruda)',cat:'Medicamentos · extra-rol · 41 indicações',scr:'analise-pemb'},
+  {key:'tez',nome:'Tezepelumabe (Tezspire)',cat:'Medicamentos · híbrido — DUTs 65.9 e 65.10 + extra-rol',scr:'analise-tez'},
   {key:'derm',nome:'Dermatoscopia digital + mapeamento corporal',cat:'Procedimentos · extra-rol',scr:null},
   {key:'cifo',nome:'Cifoplastia',cat:'Procedimentos · extra-rol',scr:null},
   {key:'neur',nome:'Neuronavegação',cat:'Procedimentos · extra-rol',scr:null},
@@ -1252,6 +1260,7 @@ function startAnalysis(){
   var p; for(var i=0;i<PROTOCOLOS.length;i++){if(PROTOCOLOS[i].key===k){p=PROTOCOLOS[i];break;}}
   closeModal('modal-new');
   if(k==='pemb'){PEMB_CASE_ID=id; show('analise-pemb'); return;}
+  if(k==='tez'){TEZ_CASE_ID=id; show('analise-tez'); return;}
   if(p.scr){show(p.scr);}
   else {
     document.getElementById('other-content').dataset.key=k;
@@ -1397,6 +1406,7 @@ function quickStart(key){
   if(key==='dona'){show('analise-dona'); return;}
   if(key==='enco'){show('analise-enco'); return;}
   if(key==='pemb'){PEMB_CASE_ID=caseId; show('analise-pemb'); return;}
+  if(key==='tez'){TEZ_CASE_ID=caseId; show('analise-tez'); return;}
   document.getElementById('other-content').dataset.key=key;
   document.getElementById('other-content').dataset.caseid=caseId;
   show('analise-other');
@@ -2192,6 +2202,196 @@ function montarComplementoPemb(sub, respostas){
   txt += '\nA apresentação é exigência indispensável para continuidade da análise do pedido.';
   return txt;
 }
+
+
+
+/* ============ PROTOCOLO TEZEPELUMABE (PROBUM-PROT-008) ============ */
+var TEZ_DATA = {"grupos": [{"key": "asma", "titulo": "🫁 Asma grave", "desc": "Asma alérgica grave (DUT 65.10) + asma eosinofílica grave (DUT 65.9)"}, {"key": "rino", "titulo": "👃 Rinossinusite", "desc": "Rinossinusite crônica grave com pólipo nasal — adultos (extra-rol)"}], "subs": [{"num": "01", "titulo": "Asma alérgica grave (DUT 65.10) — paciente ≥ 12 anos", "grupo": "asma", "c1": "Trata-se de pedido do medicamento Tezspire (tezepelumabe), indicado pelas normas sanitárias brasileiras e contemplado no Rol da Agência Nacional de Saúde Suplementar — ANS, por meio da Diretriz de Utilização nº 65.10, para o tratamento complementar da asma alérgica grave em pacientes com 12 anos de idade ou mais, observados os critérios cumulativos estabelecidos pela DUT — asma não controlada apesar do uso de corticoide inalatório associado a beta 2 agonista de longa duração; evidência de sensibilização a pelo menos um aeroalérgeno perene documentada por teste cutâneo de puntura ou dosagem de IgE sérica específica in vitro; e quadro exacerbatório caracterizado por duas ou mais exacerbações asmáticas com necessidade de tratamento com corticoide oral no último ano, ou por uma ou mais exacerbações asmáticas com necessidade de hospitalização no último ano, ou por uso contínuo de corticoide oral para controle da asma nos últimos seis meses.", "perguntas": [{"id": "01-A-P1", "idx": 1, "texto": "Há documentação do fenótipo alérgico da asma firmada por pneumologista, alergista ou imunologista assistente?", "opcoes": ["Sim, fenótipo alérgico documentado por especialista", "Diagnóstico de asma sem caracterização do fenótipo", "Não informado / Não documentado"], "variantes": {"1": "No caso, há registro de diagnóstico de asma, sem caracterização do fenótipo alérgico. A Diretriz de Utilização nº 65.10 do Rol da ANS restringe a cobertura obrigatória do tezepelumabe ao tratamento complementar da asma com inflamação do tipo 2 e fenótipo alérgico — não da asma de outros fenótipos —, condição que pressupõe documentação clínica específica do fenótipo alérgico por médico assistente habilitado.", "2": "Não foi apresentada documentação do diagnóstico do fenótipo alérgico da asma. A documentação desse fenótipo é exigência indispensável para indicação e utilização do tezepelumabe ao abrigo da Diretriz de Utilização nº 65.10 do Rol da ANS, que restringe a cobertura obrigatória ao tratamento complementar da asma com inflamação do tipo 2 e fenótipo alérgico."}}, {"id": "01-A-P2", "idx": 2, "texto": "Há registro de asma não controlada apesar do uso prévio de corticoide inalatório associado a beta 2 agonista de longa duração (CI + LABA)?", "opcoes": ["Sim — registro de não controle apesar da associação CI + LABA", "Tratamento prévio apenas com corticoide inalatório ou apenas com beta 2 agonista de longa duração, sem a associação cumulativa", "Sem tratamento prévio com CI + LABA documentado", "Não informado / Não documentado"], "variantes": {"1": "No caso, há registro de tentativa terapêutica isolada com corticoide inalatório ou com beta 2 agonista de longa duração, sem a associação cumulativa exigida pela Diretriz de Utilização nº 65.10 do Rol da ANS. O critério (a) da DUT pressupõe asma não controlada apesar do uso de corticoide inalatório associado a beta 2 agonista de longa duração — a associação dessas duas classes terapêuticas é parte do escalonamento obrigatório anterior à introdução do imunobiológico.", "2": "No caso, não há registro de tratamento prévio com corticoide inalatório associado a beta 2 agonista de longa duração. O critério (a) da Diretriz de Utilização nº 65.10 do Rol da ANS pressupõe asma não controlada apesar do uso dessa associação — etapa terapêutica anterior à introdução do imunobiológico, exigência indispensável para o enquadramento da solicitação na cobertura prevista pela DUT.", "3": "Não foi apresentada documentação do tratamento prévio com corticoide inalatório associado a beta 2 agonista de longa duração. A documentação dessa etapa terapêutica é exigência indispensável para verificação do critério (a) da Diretriz de Utilização nº 65.10 do Rol da ANS, que condiciona a cobertura do tezepelumabe à demonstração de asma não controlada apesar do uso dessa associação."}}, {"id": "01-A-P3", "idx": 3, "texto": "Foi apresentada evidência de sensibilização a pelo menos um aeroalérgeno perene, documentada por teste cutâneo de puntura ou dosagem de IgE sérica específica in vitro?", "opcoes": ["Sim, documentada por teste cutâneo de puntura", "Sim, documentada por IgE sérica específica in vitro", "Apenas dosagem de IgE sérica total, sem teste específico", "Sem documentação de sensibilização a aeroalérgeno perene", "Não informado / Não documentado"], "variantes": {"2": "No caso, há apenas dosagem de IgE sérica total, sem teste de sensibilização específica a aeroalérgeno perene. O critério (b) da Diretriz de Utilização nº 65.10 do Rol da ANS exige evidência de sensibilização documentada por teste cutâneo de puntura ou dosagem de IgE sérica específica in vitro — a IgE total elevada, isoladamente, não preenche o critério de sensibilização específica.", "3": "No caso, não há registro de sensibilização a aeroalérgeno perene documentada por teste cutâneo de puntura ou por dosagem de IgE sérica específica in vitro. O critério (b) da Diretriz de Utilização nº 65.10 do Rol da ANS é exigência indispensável para verificação do fenótipo alérgico, sem a qual não há enquadramento da solicitação na cobertura prevista pela DUT.", "4": "Não foi apresentada documentação de sensibilização a aeroalérgeno perene por teste cutâneo de puntura ou por dosagem de IgE sérica específica in vitro. A documentação dessa sensibilização específica é exigência indispensável para verificação do critério (b) da Diretriz de Utilização nº 65.10 do Rol da ANS."}}, {"id": "01-A-P4", "idx": 4, "texto": "O quadro exacerbatório do paciente preenche pelo menos um dos critérios alternativos do item (c) da DUT 65.10?", "opcoes": ["Duas ou mais exacerbações asmáticas com necessidade de corticoide oral no último ano", "Uma ou mais exacerbações asmáticas com necessidade de hospitalização (≥ 24 horas) no último ano", "Uso contínuo de corticoide oral para controle da asma nos últimos seis meses", "Nenhum dos critérios documentado", "Não informado / Não documentado"], "variantes": {"3": "No caso, não há registro de quadro exacerbatório com a gravidade exigida pela Diretriz de Utilização nº 65.10 do Rol da ANS — duas ou mais exacerbações com necessidade de corticoide oral no último ano; ou uma ou mais exacerbações com necessidade de hospitalização no último ano; ou uso contínuo de corticoide oral nos últimos seis meses. O critério (c) da DUT é exigência cumulativa para a cobertura do tezepelumabe.", "4": "Não foi apresentada documentação do quadro exacerbatório do último ano — número de exacerbações com necessidade de corticoide oral, exacerbações com hospitalização, ou uso contínuo de corticoide oral nos últimos seis meses. A documentação dessa dimensão exacerbatória é exigência indispensável para verificação do critério (c) da Diretriz de Utilização nº 65.10 do Rol da ANS."}}], "cob_disponivel": "Cabe destacar que esta análise técnica não compromete a continuidade do cuidado do paciente. As demais terapias previstas no Rol da ANS para o tratamento complementar da asma alérgica grave — outros imunobiológicos contemplados pela Diretriz de Utilização nº 65.10, terapia inalatória de manutenção em doses ajustadas, terapia adjuvante quando indicada — permanecem cobertas conforme as regras de cobertura aplicáveis a cada protocolo.", "p1": "O Tezspire (tezepelumabe) consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS, por meio da Diretriz de Utilização nº 65.10, com cobertura obrigatória apenas nos termos rigorosamente delimitados pela DUT — para o tratamento complementar da asma alérgica grave em pacientes com 12 anos de idade ou mais, no preenchimento cumulativo dos critérios (a) asma não controlada apesar do uso de corticoide inalatório associado a beta 2 agonista de longa duração; (b) evidência de sensibilização a pelo menos um aeroalérgeno perene documentada por teste cutâneo de puntura ou dosagem de IgE sérica específica in vitro; e (c) quadro exacerbatório qualificado conforme a alternativa cumulativa da DUT. O uso solicitado, conforme análise acima, não preenche cumulativamente esses critérios.", "p1_custom": true, "p3": "Diante desse quadro normativo, a cobertura assistencial pelo plano de saúde — nos termos da Lei nº 9.656/1998 e do contrato firmado — restringe-se aos procedimentos e medicamentos previstos no Rol da ANS dentro dos critérios estabelecidos pelas respectivas Diretrizes de Utilização. Não preenchidos os critérios da Diretriz de Utilização nº 65.10 para o uso do tezepelumabe no tratamento complementar da asma alérgica grave, e tampouco verificadas as hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, a operadora não está obrigada à cobertura nas condições solicitadas.", "comp_docs": ["Documentação do diagnóstico do fenótipo alérgico da asma firmada por pneumologista, alergista ou imunologista assistente", "Documentação do tratamento prévio com corticoide inalatório associado a beta 2 agonista de longa duração (CI + LABA), com registro de não controle da asma apesar da associação", "Laudo de teste cutâneo de puntura ou dosagem de IgE sérica específica in vitro evidenciando sensibilização a pelo menos um aeroalérgeno perene", "Documentação do quadro exacerbatório do último ano (número de exacerbações com necessidade de corticoide oral, exacerbações com hospitalização de ≥ 24 horas, ou uso contínuo de corticoide oral nos últimos seis meses)"]}, {"num": "02", "titulo": "Asma eosinofílica grave (DUT 65.9) — paciente ≥ 12 anos", "grupo": "asma", "c1": "Trata-se de pedido do medicamento Tezspire (tezepelumabe), indicado pelas normas sanitárias brasileiras e contemplado no Rol da Agência Nacional de Saúde Suplementar — ANS, por meio da Diretriz de Utilização nº 65.9, para o tratamento complementar da asma eosinofílica grave em pacientes com 12 anos de idade ou mais, observados os critérios cumulativos estabelecidos pela DUT — asma não controlada apesar do uso de corticoide inalatório associado a beta 2 agonista de longa duração; pelo menos uma contagem de eosinófilos igual ou superior a trezentas células por microlitro nos últimos doze meses, ou, em pacientes em uso contínuo ou recorrente de corticoide oral, pelo menos uma contagem igual ou superior a cento e cinquenta células por microlitro nos últimos doze meses; e quadro exacerbatório caracterizado por duas ou mais exacerbações asmáticas com necessidade de tratamento com corticoide oral no último ano, ou por uma ou mais exacerbações asmáticas com necessidade de hospitalização no último ano, ou por uso contínuo de corticoide oral para controle da asma nos últimos seis meses.", "perguntas": [{"id": "02-A-P1", "idx": 1, "texto": "Há documentação do fenótipo eosinofílico da asma firmada por pneumologista, alergista ou imunologista assistente?", "opcoes": ["Sim, fenótipo eosinofílico documentado por especialista", "Diagnóstico de asma sem caracterização do fenótipo", "Não informado / Não documentado"], "variantes": {"1": "No caso, há registro de diagnóstico de asma, sem caracterização do fenótipo eosinofílico. A Diretriz de Utilização nº 65.9 do Rol da ANS restringe a cobertura obrigatória do tezepelumabe ao tratamento complementar da asma com inflamação do tipo II e fenótipo eosinofílico — não da asma de outros fenótipos —, condição que pressupõe documentação clínica específica do fenótipo eosinofílico por médico assistente habilitado.", "2": "Não foi apresentada documentação do diagnóstico do fenótipo eosinofílico da asma. A documentação desse fenótipo é exigência indispensável para indicação e utilização do tezepelumabe ao abrigo da Diretriz de Utilização nº 65.9 do Rol da ANS, que restringe a cobertura obrigatória ao tratamento complementar da asma com inflamação do tipo II e fenótipo eosinofílico."}}, {"id": "02-A-P2", "idx": 2, "texto": "Há registro de asma não controlada apesar do uso prévio de corticoide inalatório associado a beta 2 agonista de longa duração (CI + LABA)?", "opcoes": ["Sim — registro de não controle apesar da associação CI + LABA", "Tratamento prévio apenas com corticoide inalatório ou apenas com beta 2 agonista de longa duração, sem a associação cumulativa", "Sem tratamento prévio com CI + LABA documentado", "Não informado / Não documentado"], "variantes": {"1": "No caso, há registro de tentativa terapêutica isolada com corticoide inalatório ou com beta 2 agonista de longa duração, sem a associação cumulativa exigida pela Diretriz de Utilização nº 65.9 do Rol da ANS. O critério (a) da DUT pressupõe asma não controlada apesar do uso de corticoide inalatório associado a beta 2 agonista de longa duração — a associação dessas duas classes terapêuticas é parte do escalonamento obrigatório anterior à introdução do imunobiológico.", "2": "No caso, não há registro de tratamento prévio com corticoide inalatório associado a beta 2 agonista de longa duração. O critério (a) da Diretriz de Utilização nº 65.9 do Rol da ANS pressupõe asma não controlada apesar do uso dessa associação — etapa terapêutica anterior à introdução do imunobiológico, exigência indispensável para o enquadramento da solicitação na cobertura prevista pela DUT.", "3": "Não foi apresentada documentação do tratamento prévio com corticoide inalatório associado a beta 2 agonista de longa duração. A documentação dessa etapa terapêutica é exigência indispensável para verificação do critério (a) da Diretriz de Utilização nº 65.9 do Rol da ANS, que condiciona a cobertura do tezepelumabe à demonstração de asma não controlada apesar do uso dessa associação."}}, {"id": "02-A-P3", "idx": 3, "texto": "Foi apresentada contagem de eosinófilos em sangue periférico nos últimos doze meses preenchendo o critério (b) da DUT 65.9?", "opcoes": ["Sim — pelo menos uma contagem igual ou superior a 300 células/µL nos últimos doze meses", "Sim — em uso contínuo ou recorrente de corticoide oral e pelo menos uma contagem igual ou superior a 150 células/µL nos últimos doze meses", "Contagem de eosinófilos abaixo dos limiares previstos pela DUT", "Sem contagem documentada nos últimos doze meses", "Não informado / Não documentado"], "variantes": {"2": "No caso, a contagem de eosinófilos em sangue periférico documentada nos últimos doze meses está abaixo dos limiares previstos pelo critério (b) da Diretriz de Utilização nº 65.9 do Rol da ANS — pelo menos uma contagem igual ou superior a trezentas células por microlitro nos últimos doze meses, ou, em pacientes em uso contínuo ou recorrente de corticoide oral, pelo menos uma contagem igual ou superior a cento e cinquenta células por microlitro no mesmo período. A documentação da contagem de eosinófilos dentro dos limiares da DUT é exigência cumulativa para o enquadramento da solicitação na cobertura prevista.", "3": "No caso, não há contagem de eosinófilos em sangue periférico documentada nos últimos doze meses. O critério (b) da Diretriz de Utilização nº 65.9 do Rol da ANS exige documentação dessa contagem como exigência cumulativa para verificação do fenótipo eosinofílico.", "4": "Não foi apresentada contagem de eosinófilos em sangue periférico dos últimos doze meses. A documentação dessa contagem é exigência indispensável para verificação do critério (b) da Diretriz de Utilização nº 65.9 do Rol da ANS, que condiciona a cobertura do tezepelumabe à demonstração de contagem de eosinófilos dentro dos limiares estabelecidos."}}, {"id": "02-A-P4", "idx": 4, "texto": "O quadro exacerbatório do paciente preenche pelo menos um dos critérios alternativos do item (c) da DUT 65.9?", "opcoes": ["Duas ou mais exacerbações asmáticas com necessidade de corticoide oral no último ano", "Uma ou mais exacerbações asmáticas com necessidade de hospitalização (≥ 24 horas) no último ano", "Uso contínuo de corticoide oral para controle da asma nos últimos seis meses", "Nenhum dos critérios documentado", "Não informado / Não documentado"], "variantes": {"3": "No caso, não há registro de quadro exacerbatório com a gravidade exigida pela Diretriz de Utilização nº 65.9 do Rol da ANS — duas ou mais exacerbações com necessidade de corticoide oral no último ano; ou uma ou mais exacerbações com necessidade de hospitalização no último ano; ou uso contínuo de corticoide oral nos últimos seis meses. O critério (c) da DUT é exigência cumulativa para a cobertura do tezepelumabe.", "4": "Não foi apresentada documentação do quadro exacerbatório do último ano — número de exacerbações com necessidade de corticoide oral, exacerbações com hospitalização, ou uso contínuo de corticoide oral nos últimos seis meses. A documentação dessa dimensão exacerbatória é exigência indispensável para verificação do critério (c) da Diretriz de Utilização nº 65.9 do Rol da ANS."}}], "cob_disponivel": "Cabe destacar que esta análise técnica não compromete a continuidade do cuidado do paciente. As demais terapias previstas no Rol da ANS para o tratamento complementar da asma eosinofílica grave — outros imunobiológicos contemplados pela Diretriz de Utilização nº 65.9, terapia inalatória de manutenção em doses ajustadas, terapia adjuvante quando indicada — permanecem cobertas conforme as regras de cobertura aplicáveis a cada protocolo.", "p1": "O Tezspire (tezepelumabe) consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS, por meio da Diretriz de Utilização nº 65.9, com cobertura obrigatória apenas nos termos rigorosamente delimitados pela DUT — para o tratamento complementar da asma eosinofílica grave em pacientes com 12 anos de idade ou mais, no preenchimento cumulativo dos critérios (a) asma não controlada apesar do uso de corticoide inalatório associado a beta 2 agonista de longa duração; (b) contagem de eosinófilos em sangue periférico dentro dos limiares estabelecidos pela DUT, observada a especificidade dos pacientes em uso contínuo ou recorrente de corticoide oral; e (c) quadro exacerbatório qualificado conforme a alternativa cumulativa da DUT. O uso solicitado, conforme análise acima, não preenche cumulativamente esses critérios.", "p1_custom": true, "p3": "Diante desse quadro normativo, a cobertura assistencial pelo plano de saúde — nos termos da Lei nº 9.656/1998 e do contrato firmado — restringe-se aos procedimentos e medicamentos previstos no Rol da ANS dentro dos critérios estabelecidos pelas respectivas Diretrizes de Utilização. Não preenchidos os critérios da Diretriz de Utilização nº 65.9 para o uso do tezepelumabe no tratamento complementar da asma eosinofílica grave, e tampouco verificadas as hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, a operadora não está obrigada à cobertura nas condições solicitadas.", "comp_docs": ["Documentação do diagnóstico do fenótipo eosinofílico da asma firmada por pneumologista, alergista ou imunologista assistente", "Documentação do tratamento prévio com corticoide inalatório associado a beta 2 agonista de longa duração (CI + LABA), com registro de não controle da asma apesar da associação", "Laudo de contagem de eosinófilos em sangue periférico dos últimos doze meses, com indicação do uso ou não de corticoide oral contínuo ou recorrente", "Documentação do quadro exacerbatório do último ano (número de exacerbações com necessidade de corticoide oral, exacerbações com hospitalização de ≥ 24 horas, ou uso contínuo de corticoide oral nos últimos seis meses)"]}, {"num": "03", "titulo": "Rinossinusite crônica grave com pólipo nasal (extra-rol) — adulto", "grupo": "rino", "c1": "Trata-se de pedido do medicamento Tezspire (tezepelumabe), indicado pelas normas sanitárias brasileiras para o tratamento complementar da rinossinusite crônica grave com pólipo nasal em adultos que falharam a tratamentos prévios, ou que são intolerantes ou com contraindicação a corticosteroides sistêmicos e/ou cirurgia.", "perguntas": [{"id": "03-A-P1", "idx": 1, "texto": "Há documentação do diagnóstico de rinossinusite crônica grave com pólipo nasal (RSCcPN) firmada por otorrinolaringologista assistente, com confirmação por endoscopia nasal e/ou tomografia computadorizada dos seios paranasais?", "opcoes": ["Sim, diagnóstico documentado por especialista com confirmação endoscópica e/ou de imagem", "Diagnóstico clínico, sem confirmação por endoscopia nasal ou tomografia dos seios paranasais", "Diagnóstico não documentado", "Não informado / Não documentado"], "variantes": {"1": "No caso, o diagnóstico de rinossinusite crônica grave com pólipo nasal apresenta-se em caráter clínico, sem a confirmação por endoscopia nasal ou por tomografia computadorizada dos seios paranasais. As normas sanitárias brasileiras restringem o uso do tezepelumabe ao tratamento complementar da rinossinusite crônica grave com pólipo nasal — condição cujo reconhecimento formal depende da documentação de pólipos nasais por método específico, sem o que não é possível verificar o enquadramento na indicação aprovada.", "2": "No caso, não há documentação do diagnóstico de rinossinusite crônica grave com pólipo nasal. A documentação desse diagnóstico por otorrinolaringologista assistente, com confirmação por endoscopia nasal e/ou tomografia computadorizada dos seios paranasais, é exigência indispensável para indicação e utilização do tezepelumabe na indicação solicitada.", "3": "Não foi apresentada documentação do diagnóstico de rinossinusite crônica grave com pólipo nasal. A documentação desse diagnóstico por otorrinolaringologista assistente, com confirmação por endoscopia nasal e/ou tomografia computadorizada dos seios paranasais, é exigência indispensável para indicação e utilização do tezepelumabe na indicação solicitada."}}, {"id": "03-A-P2", "idx": 2, "texto": "Qual a idade do paciente para o qual o tezepelumabe está sendo solicitado nesta indicação?", "opcoes": ["Adulto — idade igual ou superior a 18 anos", "Menor de 18 anos", "Não informado / Não documentado"], "variantes": {"1": "No caso, o paciente para o qual o tezepelumabe está sendo solicitado nesta indicação tem idade inferior a 18 anos. As normas sanitárias brasileiras restringem o uso do tezepelumabe no tratamento complementar da rinossinusite crônica grave com pólipo nasal exclusivamente a pacientes adultos — limitação etária expressamente declarada na bula aprovada pela Agência Nacional de Vigilância Sanitária.", "2": "Não foi apresentada documentação da idade do paciente para o qual o tezepelumabe está sendo solicitado nesta indicação. A documentação da idade é exigência indispensável para verificação do enquadramento na indicação aprovada pelas normas sanitárias brasileiras, que restringem o uso do tezepelumabe na rinossinusite crônica grave com pólipo nasal a pacientes adultos."}}, {"id": "03-A-P3", "idx": 3, "texto": "Há registro de falha, intolerância ou contraindicação documentada a corticosteroides sistêmicos e/ou a cirurgia funcional dos seios paranasais?", "opcoes": ["Falha documentada a corticosteroides sistêmicos e/ou a cirurgia funcional dos seios paranasais", "Intolerância ou contraindicação documentada a corticosteroides sistêmicos e/ou a cirurgia", "Sem tentativa terapêutica prévia documentada", "Não informado / Não documentado"], "variantes": {"2": "No caso, não há registro de tentativa terapêutica prévia com corticosteroides sistêmicos ou com cirurgia funcional dos seios paranasais. As normas sanitárias brasileiras restringem o uso do tezepelumabe no tratamento complementar da rinossinusite crônica grave com pólipo nasal aos pacientes que falharam a tratamentos prévios, ou que são intolerantes ou com contraindicação a corticosteroides sistêmicos e/ou cirurgia — etapa terapêutica anterior cuja documentação é exigência indispensável para o enquadramento da solicitação na indicação aprovada.", "3": "Não foi apresentada documentação de tentativa terapêutica prévia com corticosteroides sistêmicos ou com cirurgia funcional dos seios paranasais, nem de intolerância ou contraindicação a essas modalidades terapêuticas. A documentação dessa etapa terapêutica é exigência indispensável para verificação do enquadramento da solicitação na indicação aprovada pelas normas sanitárias brasileiras."}}], "cob_disponivel": "Cabe destacar que esta análise técnica não compromete a continuidade do cuidado otorrinolaringológico do paciente. As normas sanitárias brasileiras asseguram, no Rol da ANS, a cobertura integral dos procedimentos diagnósticos e terapêuticos previstos para a rinossinusite crônica com pólipos nasais — endoscopia nasal, tomografia computadorizada dos seios paranasais, cirurgia funcional dos seios paranasais e tratamento clínico padrão —, todos disponíveis ao beneficiário conforme indicação do médico assistente.", "p1": "O Tezspire (tezepelumabe), no tratamento complementar da rinossinusite crônica grave com pólipo nasal, não consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS, tampouco em diretriz de utilização específica que estabeleça critérios para sua cobertura no âmbito da saúde suplementar. A Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde — Conitec — não avaliou nem recomendou a incorporação do tezepelumabe nessa indicação para o Sistema Único de Saúde, e não há Protocolo Clínico e Diretrizes Terapêuticas do Ministério da Saúde específico para a rinossinusite crônica com pólipos nasais que respalde esse uso pelo sistema sanitário brasileiro. Cabe observar que, ao atualizar o Protocolo Clínico e Diretrizes Terapêuticas da Asma em 24 de março de 2026, por meio da Portaria Conjunta SAES/SCTIE/MS nº 43, o Ministério da Saúde não incorporou o tezepelumabe ao tratamento padrão pelo sistema sanitário brasileiro — o que evidencia, em atualização recente, a posição das autoridades sanitárias federais sobre a tecnologia.", "p1_custom": true, "p3": "Diante desse quadro normativo, a cobertura assistencial pelo plano de saúde — nos termos da Lei nº 9.656/1998 e do contrato firmado — restringe-se aos procedimentos e medicamentos previstos no Rol da ANS, ressalvadas hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, não verificados no caso. Não havendo previsão regulatória para o custeio do tezepelumabe no tratamento complementar da rinossinusite crônica grave com pólipo nasal, tampouco incorporação pelas autoridades sanitárias brasileiras, a operadora não está obrigada à cobertura nas condições solicitadas.", "comp_docs": ["Documentação do diagnóstico de rinossinusite crônica grave com pólipo nasal firmada por otorrinolaringologista assistente, com confirmação por endoscopia nasal e/ou tomografia computadorizada dos seios paranasais", "Documentação da idade do paciente", "Documentação de tentativa terapêutica prévia com corticosteroides sistêmicos e/ou cirurgia funcional dos seios paranasais, ou de intolerância ou contraindicação a essas modalidades terapêuticas"]}], "off_label": {"c1": "Trata-se de pedido do medicamento Tezspire (tezepelumabe) para indicação clínica não aprovada pelas normas sanitárias brasileiras. A Agência Nacional de Vigilância Sanitária autoriza o uso do tezepelumabe em apenas duas indicações específicas: como terapia adicional ao tratamento de manutenção de pacientes com asma grave com 12 anos de idade ou mais; e como tratamento complementar para rinossinusite crônica grave com pólipo nasal em adultos que falharam a tratamentos prévios, ou que são intolerantes ou com contraindicação a corticosteroides sistêmicos e/ou cirurgia. O uso fora dessas indicações configura emprego experimental, sem comprovação de indicação, segurança ou eficácia pelas autoridades sanitárias brasileiras.", "p1": "O uso pleiteado do tezepelumabe está fora das indicações aprovadas pela Agência Nacional de Vigilância Sanitária, condição que afasta a obrigatoriedade de cobertura pelo plano de saúde. O medicamento não consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS para a indicação solicitada, tampouco em diretriz de utilização específica que estabeleça critérios para essa cobertura. A Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde — Conitec — não avaliou nem recomendou o uso do tezepelumabe na indicação solicitada, e não há Protocolo Clínico e Diretrizes Terapêuticas do Ministério da Saúde que respalde esse uso pelo sistema sanitário brasileiro.", "p3": "Diante desse quadro normativo, a cobertura assistencial pelo plano de saúde — nos termos da Lei nº 9.656/1998 e do contrato firmado — restringe-se aos procedimentos e medicamentos previstos no Rol da ANS, ressalvadas hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, não verificados no caso. Não havendo aprovação regulatória do tezepelumabe para a indicação solicitada, tampouco incorporação pelas autoridades sanitárias brasileiras, a operadora não está obrigada à cobertura nas condições solicitadas."}, "bloco_b": {"id": "B-P1", "texto": "Há registro documentado de hipersensibilidade prévia ao tezepelumabe ou a qualquer um dos excipientes da apresentação?", "opcoes": ["Sim — há registro documentado", "Não — não há registro", "Não informado / Não documentado"], "variantes": {"0": "Foi apresentado registro de hipersensibilidade prévia ao tezepelumabe ou a algum dos excipientes da apresentação. A bula brasileira do Tezspire estabelece a hipersensibilidade conhecida ao princípio ativo ou a qualquer um dos excipientes como contraindicação formal — caracterizando situação em que a continuidade ou a instituição do uso do medicamento está expressamente vedada pelas normas sanitárias brasileiras. A verificação desse antecedente é exigência indispensável para indicação e utilização da droga."}}, "p1_padrao": "", "p3_padrao": ""};
+
+var TEZ_CASE_ID = 'XXXXX';
+var TEZ_SUB_ATUAL = null;
+
+function runTezSel(){
+  document.getElementById('tez-breadcrumb').textContent = 'Tezepelumabe (Tezspire) — seleção de indicação';
+  var html = '<div class="card" style="overflow:hidden;margin-bottom:18px"><div class="protocol-header">'+
+    '<h2>Análise técnica · tezepelumabe (Tezspire)</h2>'+
+    '<div class="ph-sub">Caso '+TEZ_CASE_ID+'</div>'+
+    '<div class="ph-desc">Anticorpo monoclonal anti-TSLP — 2 indicações ANVISA (asma grave 12+ e rinossinusite crônica grave com pólipo nasal — adulto)</div>'+
+    '<div class="protocol-version">Protocolo Probum Triagem · v1.0 · 27/05/2026 · medicamento híbrido (DUTs 65.9/65.10 + extra-rol)</div>'+
+    '</div></div>'+
+    '<div class="alert alert-info"><span style="font-size:18px">💡</span><span>Selecione o <strong>grupo de indicação</strong>, depois a indicação específica. Caso o uso solicitado não conste das indicações aprovadas pela ANVISA, escolha "Outra indicação" para tratamento off-label.</span></div>'+
+    '<div class="pemb-grupos">';
+  for(var i=0; i<TEZ_DATA.grupos.length; i++){
+    var g = TEZ_DATA.grupos[i];
+    var count = TEZ_DATA.subs.filter(function(s){return s.grupo===g.key;}).length;
+    var parts = g.titulo.split(' ');
+    var icon = parts[0];
+    var label = parts.slice(1).join(' ');
+    html += '<div class="pemb-grupo-card" onclick="runTezGrupo(\''+g.key+'\')">'+
+      '<div class="pgc-icon">'+icon+'</div>'+
+      '<div class="pgc-title">'+label+'</div>'+
+      '<div class="pgc-desc">'+g.desc+'</div>'+
+      '<div class="pgc-count">'+count+' indicação'+(count===1?'':'es')+'</div>'+
+    '</div>';
+  }
+  html += '</div>'+
+    '<div style="margin-top:18px"><div class="bif-card" style="border:2px dashed var(--borda)" onclick="runTezSub(\'off\')">'+
+    '<div style="display:flex;align-items:center;gap:14px"><div style="font-size:32px">❓</div>'+
+    '<div style="flex:1"><h4 style="margin-bottom:4px">Outra indicação</h4>'+
+    '<p style="margin:0">Uso fora das 2 indicações aprovadas pela ANVISA — gera texto automático off-label sem perguntas técnicas.</p></div>'+
+    '<span class="bif-btn">Selecionar →</span></div></div></div>';
+  document.getElementById('tez-content').innerHTML = html;
+}
+
+function runTezGrupo(grupoKey){
+  var grupo = TEZ_DATA.grupos.find(function(g){return g.key===grupoKey;});
+  var subs = TEZ_DATA.subs.filter(function(s){return s.grupo===grupoKey;});
+  document.getElementById('tez-breadcrumb').textContent = 'Tezepelumabe · '+grupo.titulo+' · seleção de indicação';
+  var html = '<div style="margin-bottom:14px"><span style="cursor:pointer;color:var(--azul-medio);font-size:13px;font-weight:600" onclick="runTezSel()">← Voltar aos grupos</span></div>'+
+    '<div class="card" style="overflow:hidden;margin-bottom:18px"><div class="protocol-header">'+
+    '<h2>'+grupo.titulo+'</h2>'+
+    '<div class="ph-sub">'+grupo.desc+'</div>'+
+    '<div class="ph-desc">'+subs.length+' indicações ANVISA aprovadas neste grupo</div>'+
+    '</div></div>'+
+    '<div class="card"><div class="card-body" style="padding:0"><table>'+
+    '<thead><tr><th style="width:60px">#</th><th>Indicação aprovada</th><th></th></tr></thead><tbody>';
+  for(var i=0; i<subs.length; i++){
+    var s = subs[i];
+    html += '<tr onclick="runTezSub(\''+s.num+'\')" style="cursor:pointer">'+
+      '<td><strong>'+s.num+'</strong></td>'+
+      '<td style="font-size:13px;line-height:1.5">'+escapeHtml(s.titulo)+'</td>'+
+      '<td style="text-align:right;color:var(--azul-medio);font-weight:600">→</td>'+
+    '</tr>';
+  }
+  html += '</tbody></table></div></div>';
+  document.getElementById('tez-content').innerHTML = html;
+}
+
+function runTezSub(num){
+  if(num==='off'){
+    document.getElementById('tez-breadcrumb').textContent = 'Tezepelumabe · uso fora de bula';
+    var off = TEZ_DATA.off_label;
+    var text = off.c1 + '\n\n' + off.p1 + '\n\n' + COBERTURA_PADRAO + '\n\n' + off.p3;
+    var html = '<div style="margin-bottom:14px"><span style="cursor:pointer;color:var(--azul-medio);font-size:13px;font-weight:600" onclick="runTezSel()">← Voltar aos grupos</span></div>'+
+      '<div class="card" style="overflow:hidden;margin-bottom:18px"><div class="protocol-header">'+
+      '<h2>Análise técnica · tezepelumabe (Tezspire)</h2>'+
+      '<div class="ph-sub">Caso '+TEZ_CASE_ID+' · indicação fora de bula brasileira</div>'+
+      '<div class="ph-desc">Sub-protocolo off-label — saída automática sem perguntas técnicas</div>'+
+      '</div></div>'+
+      '<div id="tez-result"></div>';
+    document.getElementById('tez-content').innerHTML = html;
+    setTimeout(function(){renderOutputAt('tez-result', text, 'Modelo de negativa — uso off-label');},30);
+    return;
+  }
+  var sub = TEZ_DATA.subs.find(function(s){return s.num===num;});
+  if(!sub) return;
+  TEZ_SUB_ATUAL = sub;
+  var grupo = TEZ_DATA.grupos.find(function(g){return g.key===sub.grupo;});
+  document.getElementById('tez-breadcrumb').textContent = 'Tezepelumabe · '+grupo.titulo.substring(grupo.titulo.indexOf(' ')+1)+' · #'+sub.num;
+  var html = '<div style="margin-bottom:14px"><span style="cursor:pointer;color:var(--azul-medio);font-size:13px;font-weight:600" onclick="runTezGrupo(\''+sub.grupo+'\')">← Voltar a '+grupo.titulo+'</span></div>'+
+    '<div class="card" style="overflow:hidden;margin-bottom:18px"><div class="protocol-header">'+
+    '<h2>Análise técnica · tezepelumabe — sub-protocolo '+sub.num+'</h2>'+
+    '<div class="ph-sub">Caso '+TEZ_CASE_ID+'</div>'+
+    '<div class="ph-desc">'+escapeHtml(sub.titulo)+'</div>'+
+    '<div class="protocol-version">Protocolo Probum Triagem · v1.0 · 27/05/2026 · medicamento híbrido (DUTs 65.9/65.10 + extra-rol)</div>'+
+    '</div></div>'+
+    '<div class="card mb-16" style="background:var(--azul-claro);border-color:#BCD4F0"><div class="card-body" style="padding:14px 18px;font-size:12.5px;color:var(--azul);line-height:1.6"><strong>Indicação alegada:</strong> '+escapeHtml(sub.c1)+'</div></div>'+
+    '<div id="tez-questions">';
+  for(var pi=0; pi<sub.perguntas.length; pi++){
+    var pq = sub.perguntas[pi];
+    var currentClass = pi===0 ? ' current' : '';
+    html += '<div class="qcard'+currentClass+'" data-pid="'+pq.idx+'">'+
+      '<div class="qnum">Pergunta '+(pi+1)+' · '+sub.num+'-A-P'+pq.idx+'</div>'+
+      '<div class="qtext">'+escapeHtml(pq.texto)+'</div>'+
+      '<div class="options">';
+    for(var oi=0; oi<pq.opcoes.length; oi++){
+      html += '<div class="option" onclick="selOpt(this)" data-oi="'+oi+'"><div class="radio"></div>'+escapeHtml(pq.opcoes[oi])+'</div>';
+    }
+    html += '</div></div>';
+  }
+  var b = TEZ_DATA.bloco_b;
+  html += '<div class="qcard" data-pid="B">'+
+    '<div class="qnum">Pergunta final · contraindicação formal · '+b.id+'</div>'+
+    '<div class="qtext">'+escapeHtml(b.texto)+'</div>'+
+    '<div class="options">';
+  for(var oi=0; oi<b.opcoes.length; oi++){
+    html += '<div class="option" onclick="selOpt(this)" data-oi="'+oi+'"><div class="radio"></div>'+escapeHtml(b.opcoes[oi])+'</div>';
+  }
+  html += '</div></div>'+
+    '<div class="text-right" style="margin-top:18px"><button class="btn btn-primary btn-lg" onclick="concluirTez()">Concluir análise →</button></div>'+
+    '</div>'+
+    '<div id="tez-result"></div>';
+  document.getElementById('tez-content').innerHTML = html;
+}
+
+function concluirTez(){
+  var sub = TEZ_SUB_ATUAL;
+  if(!sub) return;
+  var respostas = [];
+  var qcards = document.querySelectorAll('#tez-questions .qcard');
+  var b_resp = null;
+  for(var i=0; i<qcards.length; i++){
+    var qc = qcards[i];
+    var pid = qc.dataset.pid;
+    var sel = qc.querySelector('.option.selected');
+    if(!sel) continue;
+    var oi = parseInt(sel.dataset.oi);
+    if(pid==='B'){
+      b_resp = {oi: oi, texto: TEZ_DATA.bloco_b.opcoes[oi], variante: TEZ_DATA.bloco_b.variantes[String(oi)] || null};
+    } else {
+      var pq = sub.perguntas.find(function(p){return String(p.idx)===pid;});
+      if(!pq) continue;
+      var op_texto = pq.opcoes[oi];
+      var var_texto = pq.variantes[String(oi)] || null;
+      var sugereDesalinhamento = (op_texto.indexOf('Não')===0 || op_texto.indexOf('Não informado')>=0 || op_texto.indexOf('Não documentado')>=0 || op_texto.indexOf('diferente')>=0 || op_texto.toLowerCase().indexOf('houve terapia')>=0 || op_texto.toLowerCase().indexOf('combinação diversa')>=0 || op_texto.toLowerCase().indexOf('combinacao diversa')>=0);
+      if(!var_texto && sugereDesalinhamento){
+        var_texto = 'No caso, a resposta documentada é "'+op_texto+'", configuração que não atende aos critérios técnicos estabelecidos pelas normas sanitárias brasileiras para a indicação solicitada conforme bula aprovada pela ANVISA.';
+      }
+      respostas.push({pid: pid, oi: oi, op_texto: op_texto, variante: var_texto});
+    }
+  }
+  document.getElementById('tez-questions').style.display='none';
+  var temContraindicacao = b_resp && b_resp.oi === 0;
+  var temAusencia = respostas.some(function(r){return r.op_texto.indexOf('Não informado')>=0 || r.op_texto.indexOf('Não documentado')>=0;});
+  var temPosAlinhada = respostas.every(function(r){return !r.variante;}) && !temContraindicacao;
+  if(temPosAlinhada){
+    renderOutputAt('tez-result', 'O protocolo Probum Triagem não detectou inconsistência técnica ou legal na análise.', 'Protocolo concluído', 'success');
+    return;
+  }
+  var negText = montarParecerTez(sub, respostas, b_resp);
+  var compText = montarComplementoTez(sub, respostas);
+  if(temAusencia && !temContraindicacao){
+    renderBifurcacao('tez-result', negText, compText);
+  } else {
+    renderOutputAt('tez-result', negText, temContraindicacao ? 'Modelo de negativa — contraindicação formal' : 'Modelo de negativa');
+  }
+}
+
+function montarParecerTez(sub, respostas, b_resp){
+  var partes = [sub.c1];
+  if(b_resp && b_resp.variante){ partes.push(b_resp.variante); }
+  for(var i=0; i<respostas.length; i++){
+    if(respostas[i].variante){ partes.push(respostas[i].variante); }
+  }
+  partes.push(sub.p1);
+  partes.push(COBERTURA_PADRAO);
+  partes.push(sub.p3);
+  if(sub.cob_disponivel){ partes.push(sub.cob_disponivel); }
+  return partes.join('\n\n');
+}
+
+function montarComplementoTez(sub, respostas){
+  var docs = sub.comp_docs && sub.comp_docs.length ? sub.comp_docs : ['Documentação clínica adicional conforme exigências da bula ANVISA para a indicação solicitada'];
+  var txt = 'PEDIDO DE INFORMAÇÕES COMPLEMENTARES\n\n';
+  txt += 'Ref.: Solicitação de tezepelumabe (Tezspire) · Caso '+TEZ_CASE_ID+' · '+sub.titulo+'\n\n';
+  txt += 'Em análise técnica do pedido em referência, foi constatada ausência de documentação/informação que permita verificar o enquadramento da solicitação nos critérios estabelecidos pelas normas sanitárias brasileiras para uso do tezepelumabe.\n\n';
+  txt += 'Assim, solicita-se a apresentação dos seguintes documentos/informações:\n\n';
+  for(var i=0; i<docs.length; i++){ txt += '  •  '+docs[i]+'\n'; }
+  txt += '\nA apresentação é exigência indispensável para continuidade da análise do pedido.';
+  return txt;
+}
+
+/* ============ FIM TEZEPELUMABE ============ */
 
 /* configurar prazo mínimo +2 dias úteis (simplificado: +2 dias) */
 (function setupPrazoMin(){
