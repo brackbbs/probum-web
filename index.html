@@ -1007,16 +1007,16 @@ function cardOutraIndicacao(onclickAttr){
     '<div class="pgc-icon" style="display:flex;align-items:center;justify-content:center;height:56px">'+ svgOutraIndicacao() +'</div>'+
     '<div class="pgc-title">Outra indicação</div>'+
     '<div class="pgc-desc">Indicação fora das aprovadas pela ANVISA — caso atípico.</div>'+
-    '<div class="pgc-count" style="visibility:hidden">—</div>'+
   '</div>';
 }
 
 function cardIndicacao(iconEmoji, titulo, desc, onclickAttr, countLabel){
+  var countHtml = countLabel ? '<div class="pgc-count">'+countLabel+'</div>' : '';
   return '<div class="pemb-grupo-card" '+onclickAttr+'>'+
     '<div class="pgc-icon">'+iconEmoji+'</div>'+
     '<div class="pgc-title">'+titulo+'</div>'+
     '<div class="pgc-desc">'+desc+'</div>'+
-    '<div class="pgc-count">'+(countLabel || '&nbsp;')+'</div>'+
+    countHtml +
   '</div>';
 }
 
