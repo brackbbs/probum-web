@@ -308,7 +308,7 @@
       <input type="password" id="login-password" required autocomplete="current-password">
     </div>
     <button type="submit" class="btn-login" id="login-btn">Entrar</button>
-    <div class="login-foot">Probum &copy; 2026 &middot; Acesso somente por convite</div>
+    <div class="login-foot">Probum &copy; 2026 &middot; Tecnologia proprietária — anterioridade documentada por carimbo de tempo (31/05/2026). Todos os direitos reservados. &middot; Acesso somente por convite</div>
   </form>
 </div>
 
@@ -1371,7 +1371,7 @@ function encoConcluir(k){
 function renderEncoOff(target){
   target.innerHTML='<div class="card" style="overflow:hidden;margin-bottom:18px"><div class="protocol-header"><h2>Análise técnica · encorafenibe (Braftovi)</h2><div class="ph-sub">Caso 614458 · indicação fora da bula brasileira</div><div class="ph-desc">Tratamento antineoplásico oral</div><div class="protocol-version">Protocolo Probum Triagem · v1.0 · 06/05/2026 · medicamento com Rol/DUT 64</div></div></div><div id="enco-result"></div>';
   var t = "Trata-se de pedido do medicamento Braftovi (encorafenibe) para indicação clínica não aprovada pelas normas sanitárias brasileiras. A ANVISA autoriza o uso do encorafenibe em apenas duas situações específicas: em combinação com binimetinibe, para o tratamento de pacientes adultos com melanoma irressecável ou metastático com mutação BRAF V600, em primeira linha; e em combinação com cetuximabe, para o tratamento, em segunda linha, de pacientes com câncer colorretal metastático com mutação no gene BRAF V600E. O uso fora dessas duas indicações configura emprego experimental, sem comprovação de indicação, segurança ou eficácia pelas autoridades sanitárias brasileiras.\n\nO uso pleiteado do encorafenibe não consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS. A Diretriz de Utilização nº 64 estabelece a cobertura obrigatória do encorafenibe apenas nas duas indicações expressamente previstas na bula da ANVISA — não havendo previsão regulatória para o uso solicitado.\n\nA taxatividade do Rol da ANS é expressamente declarada no art. 2º da Resolução Normativa nº 465/2021 e suas alterações. O Supremo Tribunal Federal, no julgamento da ADI nº 7.265, em 18 de setembro de 2025, reafirmou esse caráter taxativo e estabeleceu que a cobertura de tratamentos não previstos no Rol constitui hipótese excepcional, condicionada ao preenchimento cumulativo de cinco requisitos objetivos. No mesmo sentido, o Enunciado nº 21 do Conselho Nacional de Justiça orienta que o rol de procedimentos é referência mínima para cobertura, ressalvadas as coberturas adicionais contratadas.\n\nDiante desse quadro normativo, a cobertura assistencial pelo plano de saúde — nos termos da Lei nº 9.656/1998 e do contrato firmado — restringe-se aos procedimentos e medicamentos previstos no Rol da ANS, ressalvadas hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, não verificados no caso. Não havendo aprovação regulatória do encorafenibe para a indicação solicitada, tampouco incorporação pelas autoridades sanitárias brasileiras, a operadora não está obrigada à cobertura nas condições solicitadas.";
-  setTimeout(function(){renderOutputAt('enco-result',t,'Modelo de negativa — uso off-label');},20);
+  setTimeout(function(){renderOutputAt('enco-result',t,'Conclusão técnica — uso off-label');},20);
 }
 
 function renderBifurcacao(elId,negText,compText){
@@ -1379,12 +1379,12 @@ function renderBifurcacao(elId,negText,compText){
   '<div class="alert alert-warning"><span style="font-size:18px">⚖️</span><span><strong>Decisão de auditor:</strong> há critérios não atendidos e itens não informados. O sistema oferece dois caminhos.</span></div>'+
   '<div class="bifurc">'+
   '<div class="bif-card" onclick="bifGen(\''+elId+'\',\'neg\')">'+
-    '<div class="bif-icon">📝</div><h4>Modelo de negativa</h4>'+
-    '<p>Usa as ausências de informação como reforço da negativa. Útil quando o caso já tem critérios claramente não-atendidos e não há expectativa de complementação.</p>'+
+    '<div class="bif-icon">📝</div><h4>Conclusão com os elementos disponíveis</h4>'+
+    '<p>Usa as ausências de informação como reforço da conclusão técnica. Útil quando o caso já tem critérios claramente não-atendidos e não há expectativa de complementação.</p>'+
     '<span class="bif-btn">Gerar</span>'+
   '</div>'+
   '<div class="bif-card" onclick="bifGen(\''+elId+'\',\'comp\')">'+
-    '<div class="bif-icon">📩</div><h4>Pedido de complemento</h4>'+
+    '<div class="bif-icon">📩</div><h4>Solicitação de complementação</h4>'+
     '<p>Solicita ao médico assistente as informações faltantes. Útil quando o auditor quer dar oportunidade de documentação completa antes de fechar a análise.</p>'+
     '<span class="bif-btn">Gerar</span>'+
   '</div>'+
@@ -1398,7 +1398,7 @@ function renderBifurcacao(elId,negText,compText){
 function bifGen(elId,kind){
   var holder=document.getElementById(elId);
   var t = kind==='neg'?holder._neg:holder._comp;
-  var titulo = kind==='neg'?'Modelo de negativa':'Pedido de informações complementares';
+  var titulo = kind==='neg'?'Conclusão técnica':'Pedido de informações complementares';
   var cls = kind==='comp'?'warning':'';
   renderOutputAt(elId+'-final',t,titulo,cls);
 }
@@ -1481,7 +1481,7 @@ function runInebSub(sub, caseId){
   if(sub==='off'){
     preset.innerHTML = protoHeader('Análise técnica · inebilizumabe (Uplizna)', caseId, sel, 'Anticorpo monoclonal anti-CD19', 'Protocolo Probum Triagem · v1.0 · 06/05/2026 · medicamento extra-rol') + '<div id="ineb-result"></div>';
     var t = "Trata-se de pedido do medicamento Uplizna (inebilizumabe) para indicação não aprovada em bula brasileira. As normas sanitárias brasileiras restringem o uso do inebilizumabe aos quadros clínicos para os quais foi aprovado pela ANVISA — distúrbios do espectro da neuromielite óptica com sorologia AQP4-IgG positiva, doença relacionada à imunoglobulina G4 e miastenia gravis generalizada. O uso fora dessas indicações configura emprego experimental, sem comprovação de indicação, segurança ou eficácia pelas autoridades sanitárias brasileiras.\n\nO uso pleiteado do inebilizumabe está fora das indicações aprovadas pela ANVISA, condição que afasta a obrigatoriedade de cobertura pelo plano de saúde. A Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde — CONITEC — não avaliou nem recomendou o uso do inebilizumabe na indicação solicitada, e tampouco há Protocolo Clínico e Diretrizes Terapêuticas do Ministério da Saúde que respalde esse uso pelo sistema sanitário brasileiro.\n\n"+COBERTURA_PADRAO+"\n\nDiante desse quadro normativo, a cobertura assistencial pelo plano de saúde — nos termos da Lei nº 9.656/1998 e do contrato firmado — restringe-se aos procedimentos e medicamentos previstos no Rol da ANS, ressalvadas hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, não verificados no caso. Não havendo aprovação regulatória do inebilizumabe para a indicação solicitada, tampouco incorporação pelas autoridades sanitárias brasileiras, a operadora não está obrigada à cobertura nas condições solicitadas.";
-    renderOutputAt('ineb-result', t, 'Modelo de negativa — uso off-label');
+    renderOutputAt('ineb-result', t, 'Conclusão técnica — uso off-label');
     return;
   }
   var perguntas = '';
@@ -1524,7 +1524,7 @@ function concluirIneb(sub){
   } else {
     t = "Trata-se de pedido do medicamento Uplizna (inebilizumabe), indicado pelas normas sanitárias brasileiras para o tratamento de pacientes adultos com doença relacionada à imunoglobulina G4 (IgG4-RD) — condição autoimune rara que se caracteriza pelo comprometimento de órgãos por infiltração inflamatória crônica e formação de fibrose.\n\nNo caso, o diagnóstico apresentado é parcial — sem a confirmação histopatológica que integra os critérios consensuados internacionais para o reconhecimento da doença relacionada à imunoglobulina G4. As normas sanitárias brasileiras restringem o uso do inebilizumabe ao tratamento dessa condição específica, e o reconhecimento formal do diagnóstico depende da confirmação por critérios pré-estabelecidos pela comunidade científica internacional. Sem essa documentação completa, não é possível verificar o enquadramento na indicação aprovada.\n\nO Uplizna (inebilizumabe) não consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS, tampouco em diretriz de utilização específica que estabeleça critérios para sua cobertura. O medicamento não foi incorporado pela Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde — CONITEC — para essa indicação, e o Ministério da Saúde mantém-se sem Protocolo Clínico e Diretrizes Terapêuticas específico para a doença relacionada à imunoglobulina G4 que inclua o inebilizumabe como tratamento padrão pelo sistema sanitário brasileiro.\n\n"+COBERTURA_PADRAO+"\n\nDiante desse quadro normativo, a cobertura assistencial pelo plano de saúde — nos termos da Lei nº 9.656/1998 e do contrato firmado — restringe-se aos procedimentos e medicamentos previstos no Rol da ANS, ressalvadas hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, não verificados no caso. Não havendo previsão regulatória para o custeio do inebilizumabe na doença relacionada à imunoglobulina G4, tampouco incorporação pelas autoridades sanitárias brasileiras, a operadora não está obrigada à cobertura nas condições solicitadas.";
   }
-  if(cccfg){renderBifurcacao('ineb-result',t,comp);} else {renderOutputAt('ineb-result',t,'Modelo de negativa');}
+  if(cccfg){renderBifurcacao('ineb-result',t,comp);} else {renderOutputAt('ineb-result',t,'Conclusão técnica');}
 }
 
 /* ----- DERMATOSCOPIA ----- */
@@ -1547,7 +1547,7 @@ function runDerm(caseId){
 function concluirDerm(){
   document.getElementById('other-questions').style.display='none';
   var t = "Trata-se de pedido do exame de dermatoscopia digital com mapeamento corporal — procedimento de imagem dermatológica que combina fotografia digital sequencial com avaliação dermatoscópica das lesões pigmentadas para acompanhamento ao longo do tempo.\n\nNo caso, não foi apresentado fator de risco específico para melanoma documentado. As normas sanitárias brasileiras reconhecem como indicação técnica do procedimento o rastreio em pacientes com perfil de alto risco — histórico pessoal de melanoma, histórico familiar de melanoma em parente de primeiro grau, síndrome do nevo atípico documentada, múltiplos nevos atípicos clinicamente identificados ou imunossupressão prolongada. Sem fator de risco documentado, o uso do procedimento como rastreio populacional não tem suporte técnico estabelecido.\n\nNão há lesão pigmentada específica clinicamente suspeita identificada. Para lesões com critério de suspeição clínica, o caminho técnico estabelecido pelo Rol da ANS é a biópsia ou exérese da lesão, com exame anatomopatológico — procedimentos integralmente cobertos pelo plano de saúde.\n\nO procedimento de dermatoscopia digital com mapeamento corporal não consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS, tampouco em diretriz de utilização específica que estabeleça critérios para sua cobertura. A Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde — CONITEC — não avaliou nem recomendou a incorporação do procedimento.\n\n"+COBERTURA_PADRAO+"\n\nCabe destacar que esta análise não compromete a continuidade do cuidado dermatológico do paciente. As normas sanitárias brasileiras asseguram, no Rol da ANS, a cobertura integral dos procedimentos dermatológicos essenciais ao rastreio e diagnóstico do câncer de pele — incluindo consulta médica dermatológica com exame clínico das lesões pigmentadas, dermatoscopia simples (manual), biópsia de pele incisional ou excisional, exérese de lesão suspeita e respectivo exame anatomopatológico —, todos disponíveis ao beneficiário conforme indicação clínica do médico assistente.\n\nDiante desse quadro normativo, a cobertura assistencial pelo plano de saúde — nos termos da Lei nº 9.656/1998 e do contrato firmado — restringe-se aos procedimentos e medicamentos previstos no Rol da ANS, ressalvadas hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, não verificados no caso. Não havendo previsão regulatória para o custeio do procedimento, tampouco incorporação pelas autoridades sanitárias brasileiras, a operadora não está obrigada à cobertura nas condições solicitadas.";
-  renderOutputAt('other-result', t, 'Modelo de negativa');
+  renderOutputAt('other-result', t, 'Conclusão técnica');
 }
 
 /* ----- CIFOPLASTIA ----- */
@@ -1570,7 +1570,7 @@ function runCifo(caseId){
 function concluirCifo(){
   document.getElementById('other-questions').style.display='none';
   var t = "Trata-se de pedido do procedimento de cifoplastia — técnica cirúrgica para tratamento de fratura vertebral por compressão, com inserção de balão e cimento ósseo para restauração parcial da altura vertebral e estabilização da fratura.\n\nNo caso, não há registro de tentativa prévia de tratamento conservador documentada. As normas sanitárias brasileiras estabelecem o tratamento conservador (analgesia, repouso, imobilização) como primeira linha terapêutica para a fratura vertebral por compressão; a indicação de procedimento invasivo pressupõe documentação de falha ou intolerância à abordagem conservadora.\n\nO Rol da ANS contempla, para o tratamento da fratura vertebral por compressão, o procedimento de vertebroplastia — técnica cirúrgica de injeção percutânea de cimento ósseo, com cobertura obrigatória nas condições previstas. No caso, a vertebroplastia não foi indicada como alternativa terapêutica antes do pleito de cifoplastia.\n\nO procedimento de cifoplastia não consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS, tampouco em diretriz de utilização específica que estabeleça critérios para sua cobertura. A Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde — CONITEC — não recomendou a incorporação da técnica como padrão de cuidado.\n\n"+COBERTURA_PADRAO+"\n\nDiante desse quadro normativo, e em especial considerando o requisito (iii) fixado pelo Supremo Tribunal Federal na ADI nº 7.265 — inexistência de alternativa terapêutica adequada já incorporada ao Rol —, a cobertura assistencial pelo plano de saúde restringe-se aos procedimentos previstos no Rol da ANS. Existe alternativa terapêutica adequada e tecnicamente equivalente, integralmente coberta, qual seja a vertebroplastia, razão pela qual não se verifica o atendimento cumulativo dos requisitos excepcionais para cobertura extra-rol.\n\nCabe destacar que esta análise não compromete a continuidade do cuidado ortopédico/neurocirúrgico do paciente. As normas sanitárias brasileiras asseguram, no Rol da ANS, a cobertura integral dos procedimentos para tratamento da fratura vertebral por compressão — incluindo o tratamento conservador, a vertebroplastia, e os procedimentos cirúrgicos de fixação quando indicados —, todos disponíveis ao beneficiário conforme indicação clínica do médico assistente.\n\nNão havendo previsão regulatória para o custeio da cifoplastia, tampouco incorporação pelas autoridades sanitárias brasileiras, e existindo alternativa terapêutica adequada incorporada ao Rol, a operadora não está obrigada à cobertura nas condições solicitadas.";
-  renderOutputAt('other-result', t, 'Modelo de negativa');
+  renderOutputAt('other-result', t, 'Conclusão técnica');
 }
 
 /* ----- NEURONAVEGAÇÃO ----- */
@@ -1593,7 +1593,7 @@ function runNeur(caseId){
 function concluirNeur(){
   document.getElementById('other-questions').style.display='none';
   var t = "Trata-se de pedido do procedimento de neuronavegação — sistema de orientação intraoperatória aplicado como tecnologia adjuvante a procedimentos neurocirúrgicos.\n\nNo caso, não há documentação de particularidade técnica que justifique o uso de tecnologia adjuvante além do que oferece o procedimento neurocirúrgico convencional. As normas sanitárias brasileiras reconhecem a neuronavegação como recurso útil em situações específicas — lesões em áreas eloquentes, lesões pequenas e profundas, biópsias estereotáxicas em casos selecionados, cirurgia funcional. A literatura não sustenta, em alto nível de evidência, vantagem clínica rotineira da neuronavegação em todo procedimento neurocirúrgico, nem indispensabilidade que descaracterize a alternativa convencional como adequada.\n\nO procedimento neurocirúrgico de base permanece disponível na rede da operadora, com equipe e estrutura adequadas, o que assegura o cuidado integral do paciente sem dependência de tecnologia adjuvante extra-rol.\n\nO procedimento de neuronavegação não consta no Rol de Procedimentos e Eventos em Saúde da Agência Nacional de Saúde Suplementar — ANS, tampouco em diretriz de utilização específica que estabeleça critérios para sua cobertura. A Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde — CONITEC — não recomendou a incorporação da tecnologia como padrão de cuidado.\n\n"+COBERTURA_PADRAO+"\n\nDiante desse quadro normativo, e em especial considerando os requisitos (iii) — inexistência de alternativa adequada incorporada ao Rol — e (iv) — comprovação de eficácia em medicina baseada em evidências de alto nível — fixados pelo Supremo Tribunal Federal na ADI nº 7.265, não se verifica o atendimento cumulativo dos requisitos excepcionais para cobertura extra-rol.\n\nCabe destacar que esta análise não compromete a continuidade do cuidado neurocirúrgico do paciente. As normas sanitárias brasileiras asseguram, no Rol da ANS, a cobertura integral do procedimento neurocirúrgico de base, com a equipe e a estrutura adequadas, conforme indicação clínica do médico assistente.\n\nNão havendo previsão regulatória para o custeio da neuronavegação, tampouco evidência de alto nível que demonstre indispensabilidade clínica em casos rotineiros, a operadora não está obrigada à cobertura nas condições solicitadas.";
-  renderOutputAt('other-result', t, 'Modelo de negativa');
+  renderOutputAt('other-result', t, 'Conclusão técnica');
 }
 
 /* ----- ANTIANGIOGÊNICO OCULAR ----- */
@@ -1616,7 +1616,7 @@ function runAntiSub(sub, caseId){
   if(sub==='off'){
     document.getElementById('other-content').innerHTML = protoHeader('Análise técnica · tratamento ocular quimioterápico com antiangiogênico', caseId, sel, 'Injeção intravítrea — CBHPM 30307147', 'Protocolo Probum Triagem · v1.0 · 06/05/2026 · procedimento com Rol/DUT 74') + '<div id="other-result"></div>';
     var t = "Trata-se de pedido do tratamento ocular quimioterápico com antiangiogênico para indicação clínica que não consta entre as quatro contempladas pela Diretriz de Utilização nº 74 do Rol da Agência Nacional de Saúde Suplementar — ANS. A DUT 74 estabelece a cobertura obrigatória do procedimento exclusivamente para a degeneração macular relacionada à idade na forma neovascular, o edema macular diabético, o edema macular secundário a oclusão de veia central da retina e o edema macular secundário a oclusão de ramo de veia central da retina. O uso pleiteado, fora dessas quatro indicações, está fora dos critérios de cobertura obrigatória previstos pelas normas sanitárias brasileiras.\n\nO uso pleiteado do tratamento ocular quimioterápico com antiangiogênico não se enquadra em nenhuma das quatro indicações previstas pela Diretriz de Utilização nº 74 do Rol da Agência Nacional de Saúde Suplementar — ANS. A Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde — CONITEC — não recomendou a incorporação do procedimento para a indicação solicitada.\n\n"+COBERTURA_PADRAO+"\n\nDiante desse quadro normativo, a cobertura assistencial pelo plano de saúde restringe-se aos procedimentos previstos no Rol da ANS dentro dos critérios estabelecidos pelas respectivas Diretrizes de Utilização, ressalvadas hipóteses excepcionais condicionadas ao preenchimento cumulativo dos requisitos fixados pelo Supremo Tribunal Federal na ADI 7.265, não verificados no caso. Não havendo previsão regulatória para o custeio do tratamento ocular quimioterápico com antiangiogênico na indicação solicitada, tampouco incorporação pelas autoridades sanitárias brasileiras, a operadora não está obrigada à cobertura nas condições solicitadas.";
-    renderOutputAt('other-result', t, 'Modelo de negativa — uso off-label');
+    renderOutputAt('other-result', t, 'Conclusão técnica — uso off-label');
     return;
   }
   var perguntas = '';
@@ -2115,7 +2115,7 @@ function runPembSub(num){
       '</div></div>'+
       '<div id="pemb-result"></div>';
     document.getElementById('pemb-content').innerHTML = html;
-    setTimeout(function(){renderOutputAt('pemb-result', text, 'Modelo de negativa — uso off-label');},30);
+    setTimeout(function(){renderOutputAt('pemb-result', text, 'Conclusão técnica — uso off-label');},30);
     return;
   }
   var sub = PEMB_DATA.subs.find(function(s){return s.num===num;});
@@ -2198,7 +2198,7 @@ function concluirPemb(){
   if(temAusencia && !temContraindicacao){
     renderBifurcacao('pemb-result', negText, compText);
   } else {
-    renderOutputAt('pemb-result', negText, temContraindicacao ? 'Modelo de negativa — contraindicação formal' : 'Modelo de negativa');
+    renderOutputAt('pemb-result', negText, temContraindicacao ? 'Conclusão técnica — contraindicação formal' : 'Conclusão técnica');
   }
 }
 
@@ -2299,7 +2299,7 @@ function runTezSub(num){
       '</div></div>'+
       '<div id="tez-result"></div>';
     document.getElementById('tez-content').innerHTML = html;
-    setTimeout(function(){renderOutputAt('tez-result', text, 'Modelo de negativa — uso off-label');},30);
+    setTimeout(function(){renderOutputAt('tez-result', text, 'Conclusão técnica — uso off-label');},30);
     return;
   }
   var sub = TEZ_DATA.subs.find(function(s){return s.num===num;});
@@ -2382,7 +2382,7 @@ function concluirTez(){
   if(temAusencia && !temContraindicacao){
     renderBifurcacao('tez-result', negText, compText);
   } else {
-    renderOutputAt('tez-result', negText, temContraindicacao ? 'Modelo de negativa — contraindicação formal' : 'Modelo de negativa');
+    renderOutputAt('tez-result', negText, temContraindicacao ? 'Conclusão técnica — contraindicação formal' : 'Conclusão técnica');
   }
 }
 
